@@ -14,6 +14,7 @@ model_mapping.py
   그 목록에 정확히 있는 것만 매칭합니다. (짐작으로 연결하지 않는다는 뜻)
 """
 
+import argparse
 from pathlib import Path      # 파일/폴더 경로를 쉽게 다루는 도구
 import re                     # 정규표현식 — 문자열에서 괄호·공백 등을 규칙적으로 지우거나 바꿀 때 사용
 import unicodedata             # 겉보기엔 같은 글자인데 컴퓨터 내부 저장 방식이 다른 경우를 통일해주는 도구
@@ -357,6 +358,235 @@ def save_mapping_csv():
     print(f"총 매핑 행 수: {len(df)}")
 
 
-# ── 17. 이 파일을 직접 실행했을 때만 동작 ─────────────────────────
+# ── 17. 원본 CSV 읽기 ───────────────────────────────────────────
+def read_source_csv(path):
+    """공공데이터 CSV의 인코딩 차이를 고려해서 읽습니다."""
+    try:
+        return pd.read_csv(path, encoding="cp949")
+    except UnicodeDecodeError:
+        return pd.read_csv(path, encoding="utf-8-sig")
+
+# ── 18. 우리 서비스 대상 6개 모델 후보인지 확인 ──────────────────
+def looks_like_target_model(model_name):
+    """
+    원본 전체에서
+    아반떼 / 쏘나타 / 그랜저 / K5 / 스포티지 / 쏘렌토
+    후보만 골라내는 함수입니다.
+
+    실제 model_key 확정은 match_model()에서 합니다.
+    """
+    name = normalize_alias(model_name)
+
+    if any(
+        keyword in name
+        for keyword in [
+            "아반떼",
+            "쏘나타",
+            "그랜저",
+            "스포티지",
+            "쏘렌토",
+        ]
+    ):
+        return True
+
+    # K5는 다른 차명 안에 우연히 k5가 들어가는 경우를 막기 위해
+    # k5로 시작할 때만 후보로 봅니다.
+    return re.match(r"^k5(?:\s|$)", name) is not None
+
+# ── 19. 리콜 원본 매핑 검증 ──────────────────────────────────────
+def validate_recall_file(path):
+    df = read_source_csv(path)
+
+    required = {"제작자", "차명", "리콜개시일"}
+    missing = required - set(df.columns)
+
+    if missing:
+        raise ValueError(
+            f"리콜 CSV 필수 컬럼 누락: {sorted(missing)}"
+        )
+
+    # 날짜 변환
+    df["리콜개시일"] = pd.to_datetime(
+        df["리콜개시일"],
+        errors="coerce",
+    )
+
+    # 서비스 분석기간 2020~2025
+    df = df[
+        df["리콜개시일"]
+        .dt.year
+        .between(2020, 2025)
+    ].copy()
+
+    # 제조사 표준화
+    df["manufacturer_std"] = (
+        df["제작자"]
+        .apply(normalize_manufacturer)
+    )
+
+    # ★ 현대자동차 / 기아만 남김
+    df = df[
+        df["manufacturer_std"].isin(
+            ["현대자동차", "기아"]
+        )
+    ].copy()
+
+    # ★ 우리 대상 6개 모델 후보만 남김
+    df = df[
+        df["차명"].apply(
+            looks_like_target_model
+        )
+    ].copy()
+
+    results = []
+
+    for _, row in df.iterrows():
+        result = match_model(
+            row["제작자"],
+            row["차명"],
+            "REC",
+        )
+
+        results.append(
+            {
+                "제작자": row["제작자"],
+                "차명": row["차명"],
+                "match_status": result["match_status"],
+                "model_key": result["model_key"],
+                "review_note": result["review_note"],
+            }
+        )
+
+    result_df = pd.DataFrame(results)
+
+    print("\n" + "=" * 60)
+    print("D-REC 매핑 검증 (2020~2025)")
+    print("=" * 60)
+
+    print(result_df["match_status"].value_counts())
+
+    unresolved = (
+        result_df[
+            result_df["match_status"] != "검증완료"
+        ][["차명", "match_status", "review_note"]]
+        .drop_duplicates()
+    )
+
+    if unresolved.empty:
+        print("\n[OK] 미매핑 대상 alias 없음")
+    else:
+        print("\n[확인 필요] 미매핑/제외 alias")
+        print(unresolved.to_string(index=False))
+
+
+# ── 20. 결함신고 원본 매핑 검증 ──────────────────────────────────
+def validate_defect_file(path):
+    df = read_source_csv(path)
+
+    required = {"접수일자", "제작사", "차명"}
+    missing = required - set(df.columns)
+
+    if missing:
+        raise ValueError(
+            f"결함신고 CSV 필수 컬럼 누락: {sorted(missing)}"
+        )
+
+    # 접수일자를 날짜형으로 변환
+    df["접수일자"] = pd.to_datetime(
+        df["접수일자"],
+        errors="coerce",
+    )
+
+    # 서비스에서 사용하는 결함신고 연도만
+    # 2023년은 원천 미확보이므로 제외
+    df = df[
+        df["접수일자"].dt.year.isin(
+            [2020, 2021, 2022, 2024, 2025]
+        )
+    ].copy()
+
+    # ★ 우리 대상 6개 모델 후보만 남김
+    df = df[
+        df["차명"].apply(
+            looks_like_target_model
+        )
+    ].copy()
+
+    results = []
+
+    for _, row in df.iterrows():
+
+        result = match_model(
+            row["제작사"],
+            row["차명"],
+            "DEFECT",
+        )
+
+        results.append(
+            {
+                "접수일자": row["접수일자"],
+                "제작사": row["제작사"],
+                "차명": row["차명"],
+                "match_status": result["match_status"],
+                "model_key": result["model_key"],
+                "review_note": result["review_note"],
+            }
+        )
+
+    return pd.DataFrame(results)
+
+
+# ── 21. 이 파일을 직접 실행했을 때만 동작 ─────────────────────────
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--recall",
+        help="차종별 리콜대수 CSV 경로",
+    )
+
+    parser.add_argument(
+        "--defect",
+        nargs="*",
+        help="제작결함신고 CSV 경로 (여러 개 가능)",
+    )
+
+    args = parser.parse_args()
+
+    # 기존 D-MAP 생성
     save_mapping_csv()
+
+    # 리콜 원본 검증
+    if args.recall:
+        validate_recall_file(args.recall)
+
+    # 결함신고 원본 검증
+    if args.defect:
+        dfs = [
+            validate_defect_file(path)
+            for path in args.defect
+        ]
+
+        result_df = pd.concat(
+            dfs,
+            ignore_index=True,
+        )
+
+        print("\n" + "=" * 60)
+        print("D-DEF 매핑 검증")
+        print("=" * 60)
+
+        print(result_df["match_status"].value_counts())
+
+        unresolved = (
+            result_df[
+                result_df["match_status"] != "검증완료"
+            ][["차명", "match_status", "review_note"]]
+            .drop_duplicates()
+        )
+
+        if unresolved.empty:
+            print("\n[OK] 미매핑 대상 alias 없음")
+        else:
+            print("\n[확인 필요] 미매핑/제외 alias")
+            print(unresolved.to_string(index=False))
