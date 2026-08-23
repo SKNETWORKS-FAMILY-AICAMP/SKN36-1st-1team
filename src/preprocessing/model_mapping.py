@@ -140,7 +140,7 @@ DEFECT_ALIASES = {
 # 일반 소비자용 모델이 아닌 특수목적 차량(예: 순찰차)은 6개 모델 비교에서 뺍니다.
 # 완전히 삭제하지 않고 "제외"로 표시해서 남겨두는 이유: 나중에 "왜 빠졌지?"를 바로 확인하기 위해서입니다.
 EXCLUDED = {
-    ("DEFECT", "아반떼 (AVANTE) 순찰차"): "특수용도 차량(순찰차)",
+    ("DEFECT", "아반떼 avante 순찰차"): "특수용도 차량(순찰차)",
 }
 
 
@@ -237,22 +237,6 @@ def build_mapping_rows():
                     "review_note": "원천 차명 직접 대조",
                     "manufacturer_support_url": support_url,
                 })
-
-    # 제외 차량도 행으로 추가 (model_key는 비워둠 = 6개 모델 어디에도 속하지 않는다는 뜻)
-    for (source_type, alias), reason in EXCLUDED.items():
-        rows.append({
-            "model_key": "",
-            "manufacturer_std": "현대자동차",
-            "model_std": "",
-            "generation_name": extract_generation_name(alias),
-            "source_type": source_type,
-            "alias_name": alias,
-            "alias_normalized": normalize_alias(alias),
-            "match_status": "제외",
-            "review_note": reason,
-            "manufacturer_support_url": MANUFACTURER_SUPPORT_URL["현대자동차"],
-        })
-
     return rows
 
 
@@ -296,6 +280,19 @@ def match_model(manufacturer, model_name, source_type):
     manufacturer_std = normalize_manufacturer(manufacturer)
     alias_normalized = normalize_alias(model_name)
 
+    excluded_reason = EXCLUDED.get(
+    (source_type, alias_normalized)
+)
+
+    if excluded_reason:
+        return {
+            "model_key": None,
+            "manufacturer_std": manufacturer_std,
+            "model_std": None,
+            "match_status": "제외",
+            "review_note": excluded_reason,
+        }
+
     mapping = LOOKUP.get((source_type, alias_normalized))
 
     if mapping is None:
@@ -303,13 +300,6 @@ def match_model(manufacturer, model_name, source_type):
         return {
             "model_key": None, "manufacturer_std": manufacturer_std, "model_std": None,
             "match_status": "검토중", "review_note": "D-MAP 미등록 alias",
-        }
-
-    if mapping["match_status"] == "제외":
-        # 순찰차처럼 서비스 대상에서 빼기로 한 차량
-        return {
-            "model_key": None, "manufacturer_std": manufacturer_std, "model_std": None,
-            "match_status": "제외", "review_note": mapping["review_note"],
         }
 
     expected_manufacturer = mapping["manufacturer_std"]
