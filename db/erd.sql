@@ -9,7 +9,7 @@ CREATE TABLE model_master (
 
 CREATE TABLE model_mapping (
     mapping_id BIGINT NOT NULL AUTO_INCREMENT,
-    model_key VARCHAR(50) NULL,
+    model_key VARCHAR(50) NOT NULL,
     generation_name VARCHAR(100) NULL,
     source_type VARCHAR(20) NOT NULL,
     alias_name VARCHAR(255) NOT NULL,

@@ -281,8 +281,10 @@ def validate_mapping(df):
     # "검증완료인데 model_key가 비어있는" 모순된 행이 있으면 에러 (둘 다 True인 행이 있는지 확인)
     check((verified & is_blank(df["model_key"])).any(), "검증완료 D-MAP 중 model_key가 비어 있는 행이 있습니다.")
 
-    # model_key 자체에 대한 공통 검사도 실행 (D-MAP은 제외/검토중 때문에 빈 값 허용)
-    validate_model_keys(df, "model_mapping", allow_null=True)
+    # model_key 자체에 대한 공통 검사도 실행
+    # ('제외'/'검토중' 행은 전처리 단계에서 model_mapping.csv에 아예 넣지 않으므로
+    #  DB에 적재되는 model_mapping은 항상 model_key가 채워져 있어야 함)
+    validate_model_keys(df, "model_mapping", allow_null=False)
 
 
 def build_model_master(mapping_df):
@@ -393,6 +395,21 @@ def validate_recalls(df):
     check(counts.dropna().lt(0).any(), "recall_count에 음수가 있습니다.")
 
 
+def validate_faq(df):
+    """faq(D-FAQ, 공통 FAQ) 데이터를 검사합니다."""
+    # faq_id(FAQ 고유번호)가 중복되면 안 됨 (DB에서 기본키로 쓰이기 때문)
+    check(df["faq_id"].duplicated().any(), "faq_id 중복이 있습니다.")
+
+    # question/answer/source_url/collected_at은 화면에 그대로 노출되거나
+    # 검색에 쓰이는 핵심 필드라 결측이면 안 됨
+    for col in ["question", "answer", "source_url", "collected_at"]:
+        check(is_blank(df[col]).any(), f"faq_master: {col} 결측")
+
+    # collected_at이 MySQL DATETIME으로 넣을 수 있는 값인지(날짜/시각으로 변환 가능한지) 확인
+    dt = pd.to_datetime(df["collected_at"], errors="coerce")
+    check(dt.isna().any(), "faq_master: collected_at을 날짜/시각으로 변환할 수 없는 값이 있습니다.")
+
+
 def prepare_data():
     """DB를 건드리기 전에, 모든 CSV를 미리 읽고 검사해서 "적재해도 안전한 상태"로 준비합니다.
     여기서 하나라도 실패하면, DB에는 손도 대지 않은 채로 프로그램이 멈춥니다(가장 안전한 방식)."""
@@ -411,6 +428,10 @@ def prepare_data():
     validate_sales(raw["vehicle_sales"])
     validate_defects(raw["defect_reports"])
     validate_recalls(raw["recall"])
+
+    # FAQ는 선택 파일이라 없을 수 있음(FILES에서 required=False) — 있을 때만 검사
+    if raw["faq"] is not None:
+        validate_faq(raw["faq"])
 
     # 모델 데이터 3종은 model_key가 "반드시" 있어야 하므로 allow_null 없이(=기본값 False로) 검사
     validate_model_keys(raw["vehicle_sales"], "vehicle_sales")
