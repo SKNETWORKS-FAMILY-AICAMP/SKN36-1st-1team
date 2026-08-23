@@ -72,11 +72,39 @@ if DB["database"] != "skn36_1st_1team":
 
 # ── 3. 프로젝트에서 정한 "규칙표"들을 미리 정의 ─────────────────────
 
-# 우리 서비스가 실제로 지원하는 자동차 모델 6개의 표준 코드(model_key) 목록입니다.
-# 이 목록에 없는 model_key가 데이터에 등장하면 "우리가 모르는 모델"이므로 에러로 처리합니다.
+# 현재 서비스가 지원하는 표준 model_key 목록입니다.
+# 이 목록에 없는 model_key가 데이터에 등장하면 에러로 처리합니다.
 EXPECTED_MODEL_KEYS = {
-    "HYU_AVANTE", "HYU_SONATA", "HYU_GRANDEUR",
-    "KIA_K5", "KIA_SPORTAGE", "KIA_SORENTO",
+    # 현대자동차
+    "HYU_AVANTE",
+    "HYU_SONATA",
+    "HYU_GRANDEUR",
+    "HYU_KONA",
+    "HYU_TUCSON",
+    "HYU_SANTAFE",
+    "HYU_PALISADE",
+    "HYU_IONIQ5",
+    "HYU_IONIQ6",
+    "HYU_CASPER",
+    "HYU_GRAND_STAREX",
+    "HYU_STARIA",
+    "HYU_PORTER",
+
+    # 기아
+    "KIA_MORNING",
+    "KIA_RAY",
+    "KIA_K3",
+    "KIA_K5",
+    "KIA_K7",
+    "KIA_K8",
+    "KIA_NIRO",
+    "KIA_SELTOS",
+    "KIA_SPORTAGE",
+    "KIA_SORENTO",
+    "KIA_CARNIVAL",
+    "KIA_EV3",
+    "KIA_EV6",
+    "KIA_BONGO3",
 }
 
 # 각 컬럼(열)에 들어올 수 있는 "허용된 값"들을 미리 정해둔 것입니다.
@@ -152,8 +180,7 @@ INSERT_SPEC = {
     "faq_master": COLUMNS["faq"],
 }
 
-# 기존 데이터를 지울 때의 순서입니다. "자식 → 부모" 순서로 지워야 합니다.
-# model_master(부모 테이블, 6개 표준 모델)를 다른 테이블(자식들)이 참조하고 있기 때문에,
+# model_master(부모 테이블, 표준 모델)를 다른 테이블(자식들)이 참조하고 있기 때문에
 # 자식들을 먼저 지우지 않으면 "아직 나를 참조하는 데이터가 있어요"라며 DB가 삭제를 거부합니다.
 DELETE_ORDER = [
     "model_mapping", "vehicle_sales", "defect_reports", "recall_campaigns",
@@ -230,9 +257,9 @@ def validate_model_keys(df, label, allow_null=False):
     # allow_null이 아닌데(=필수인데) 비어있는 칸이 하나라도 있으면 에러
     check((not allow_null) and missing.any(), f"{label}에 model_key 결측이 있습니다.")
 
-    # 실제로 값이 채워진 model_key들만 모아서, "우리가 지원하는 6개 모델"에 속하는지 검사
+    # 실제로 값이 채워진 model_key들만 모아서 지원 모델 목록에 속하는지 검사
     keys = set(df.loc[~missing, "model_key"].astype(str).str.strip())
-    bad = keys - EXPECTED_MODEL_KEYS  # 6개 목록에 없는 이상한 model_key가 있는지 확인
+    bad = keys - EXPECTED_MODEL_KEYS
     check(bool(bad), f"{label}에 지원하지 않는 model_key: {sorted(bad)}")
 
 
@@ -288,8 +315,8 @@ def validate_mapping(df):
 
 
 def build_model_master(mapping_df):
-    """model_mapping.csv 안에서, 표준 모델 6개의 "기준 정보"만 뽑아 별도 표로 만듭니다.
-    이 표가 DB에서 model_master(모델 마스터) 테이블이 되며, 다른 테이블들이 이 표를 참조합니다."""
+    """model_mapping.csv에서 현재 지원 모델의 기준 정보만 뽑아
+        DB의 model_master 테이블을 만듭니다."""
     valid = ~is_blank(mapping_df["model_key"])  # model_key가 실제로 채워진 행만 사용 (~ 는 "반대로 뒤집기")
     cols = ["model_key", "manufacturer_std", "model_std", "manufacturer_support_url"]
 
@@ -305,11 +332,17 @@ def build_model_master(mapping_df):
     # (groupby로 model_key별 행 개수를 세서, 2개 이상 나오면 정보가 안 겹치고 갈라져 있다는 뜻)
     check((master.groupby("model_key").size() > 1).any(), "같은 model_key에 서로 다른 표준 모델정보가 있습니다.")
 
-    # 실제로 만들어진 model_key 집합이, 우리가 정한 6개 목록과 정확히 일치하는지 확인
     keys = set(master["model_key"])
-    check(keys != EXPECTED_MODEL_KEYS, f"model_master 모델이 대상 6개와 불일치: {sorted(keys)}")
-    # 혹시 몰라 행 개수도 정확히 6개인지 한 번 더 확인 (이중 안전장치)
-    check(len(master) != 6, f"model_master는 정확히 6행이어야 합니다. 현재 {len(master)}행")
+    check(
+    keys != EXPECTED_MODEL_KEYS,
+    f"model_master 모델이 지원 대상과 불일치: {sorted(keys)}",
+    )
+
+    check(
+    len(master) != len(EXPECTED_MODEL_KEYS),
+    f"model_master는 정확히 {len(EXPECTED_MODEL_KEYS)}행이어야 합니다. "
+    f"현재 {len(master)}행",
+    )
 
     return master
 
@@ -415,7 +448,7 @@ def prepare_data():
     여기서 하나라도 실패하면, DB에는 손도 대지 않은 채로 프로그램이 멈춥니다(가장 안전한 방식)."""
     print("\n" + "=" * 70 + "\n1. processed CSV 검사\n" + "=" * 70)
 
-    # FILES에 정의된 6개 이름 각각에 대해 load_csv를 호출해서, {이름: 표} 형태의 딕셔너리로 모음
+    # FILES에 정의된 6개 파일 이름 각각에 대해 load_csv를 호출해서, {이름: 표} 형태의 딕셔너리로 모음
     raw = {name: load_csv(name) for name in FILES}
 
     # model_mapping(D-MAP)부터 검사하고, 이를 바탕으로 model_master / DB용 mapping 표를 만듦
@@ -547,9 +580,15 @@ def verify_business_rules(conn):
     각 항목은 (설명, 실행할 SQL, "이 개수(n)면 통과다"라는 조건) 세 가지로 구성됩니다."""
     print("\n" + "=" * 70 + "\n6. v2.6 핵심 데이터 정책 검증\n" + "=" * 70)
 
+    expected_model_count = len(EXPECTED_MODEL_KEYS)
+
     rules = [
-        # model_master는 정확히 6개여야 함
-        ("model_master = 6개", "SELECT COUNT(*) FROM model_master", lambda n: n == 6),
+    # model_master는 현재 지원 모델 수와 정확히 일치해야 함
+    (
+    f"model_master = {expected_model_count}개",
+    "SELECT COUNT(*) FROM model_master",
+    lambda n: n == expected_model_count,
+    ),
 
         # '검증완료'인데 model_key가 비어있는 행은 DB에 하나도 없어야 함
         ("D-MAP 검증완료 → model_key 존재",

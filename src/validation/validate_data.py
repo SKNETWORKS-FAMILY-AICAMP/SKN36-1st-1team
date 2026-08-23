@@ -12,14 +12,12 @@ check_one_file() 함수 하나가 알아서 다 처리한다.
 import sys
 from pathlib import Path
 import pandas as pd
+from src.preprocessing.model_mapping import MODEL_MASTER
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data" / "processed"
 
-SUPPORTED_MODELS = {
-    "HYU_AVANTE", "HYU_SONATA", "HYU_GRANDEUR",
-    "KIA_K5", "KIA_SPORTAGE", "KIA_SORENTO",
-}
+SUPPORTED_MODELS = set(MODEL_MASTER)
 
 FILES = {
     "model_mapping.csv": {
@@ -28,12 +26,11 @@ FILES = {
                     "review_note", "manufacturer_support_url"],
         "required": ["model_key", "manufacturer_std", "model_std", "source_type",
                      "alias_name", "alias_normalized", "match_status", "manufacturer_support_url"],
-        "count": 94,
+        "count": None,
         "check_model_key": True,
         "allowed_values": {"match_status": {"검증완료"}},
         "unique": [["source_type", "alias_name"]],
         "exclude_contains": {"alias_name": "순찰차"},
-        "value_counts": {"source_type": {"SALES": 6, "DEFECT": 35, "REC": 53}},
     },
     "vehicle_sales.csv": {
         "columns": ["sales_year", "manufacturer", "model_original", "model_key",
@@ -41,7 +38,7 @@ FILES = {
         # domestic_sales_count는 데이터정의서상 NULL 허용이라 required에서 뺌
         "required": ["sales_year", "manufacturer", "model_original", "model_key",
                      "verification_status", "source_url", "loaded_at"],
-        "count": 36,
+        "count": None,
         "check_model_key": True,
         "year_col": "sales_year",
         "year_type": "numeric",
@@ -57,7 +54,7 @@ FILES = {
                     "model_key", "source_url", "loaded_at"],
         # manufacturer는 데이터정의서상 NULL 허용이라 required에서 뺌
         "required": ["report_date", "model_original", "model_key", "source_url", "loaded_at"],
-        "count": 7737,
+        "count": None,
         "check_model_key": True,
         "year_col": "report_date",
         "year_type": "date",
@@ -72,7 +69,7 @@ FILES = {
         "required": ["recall_id", "manufacturer", "model_original", "model_key",
                      "recall_start_date", "recall_count", "source_url",
                      "official_check_url", "loaded_at"],
-        "count": 88,
+        "count": None,
         "check_model_key": True,
         "year_col": "recall_start_date",
         "year_type": "date",

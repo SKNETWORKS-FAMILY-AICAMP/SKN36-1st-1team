@@ -3,7 +3,7 @@ preprocess_defect.py
 =====================
 이 파일이 하는 일 (한 줄 요약):
   한국교통안전공단 "자동차제작결함신고" 연도별 CSV 5개(2020·2021·2022·2024·2025)를
-  하나로 합쳐서, 우리 6개 모델의 결함신고 데이터(D-DEF)로 만들어줍니다.
+  하나로 합쳐서, 우리 서비스 지원 모델의 결함신고 데이터(D-DEF)로 만들어줍니다.
 
 결과 저장 위치: data/processed/defect_reports.csv
 
@@ -24,6 +24,11 @@ import re                       # 문자열에서 괄호·공백 등을 규칙�
 import unicodedata              # 겉보기엔 같은 글자인데 컴퓨터 내부 저장 방식이 다른 경우를 통일하는 도구
 
 import pandas as pd             # CSV 읽기·필터링·정렬·저장을 담당하는 라이브러리
+from src.preprocessing.model_mapping import (
+    MODEL_MASTER,
+    EXCLUDED,
+    looks_like_target_model as mapping_looks_like_target_model,
+)
 
 
 # ── 1. 프로젝트 폴더 위치 ─────────────────────────────────────────
@@ -86,19 +91,16 @@ def normalize_manufacturer_for_check(value):
     return None
 
 
-# ── 7. "우리 6개 모델처럼 보이는지" 1차로 걸러내는 함수 ───────────────
+# ── 7. "우리 모델처럼 보이는지" 1차로 걸러내는 함수 ───────────────
 def looks_like_target_model(model_name):
-    """이 함수는 model_key를 정하지 않습니다. 그냥 "D-MAP에 새로 등록해야 할지도 모르는
-    우리 대상 모델 후보"를 놓치지 않고 찾아내기 위한 1차 필터일 뿐입니다."""
-    name = normalize_alias(model_name)
-
-    if any(keyword in name for keyword in ["아반떼", "쏘나타", "그랜저", "스포티지", "쏘렌토"]):
-        return True
-
-    # K5는 단순히 "k5 in name"으로 검사하면 SLK55, AK550 같은 전혀 다른 차량도 걸릴 수 있어서,
-    # 문자열이 정확히 "k5"로 시작할 때만("k5" 뒤에 공백이 오거나 문자열이 끝날 때만) 인정합니다.
-    return re.match(r"^k5(?:\s|$)", name) is not None
-
+    """
+    현재 서비스 지원 모델 후보인지 확인합니다.
+    실제 후보 판별 규칙은 model_mapping.py를 공통으로 사용합니다.
+    """
+    return mapping_looks_like_target_model(
+        model_name,
+        "DEFECT",
+    )
 
 # ── 8. D-MAP(model_mapping.csv)에서 결함신고용 별칭만 불러오기 ───────
 def load_defect_mapping():
@@ -229,15 +231,33 @@ def preprocess_one_file(path, mapping_lookup, loaded_at):
     df["model_original"] = df["차명"].astype("string").str.strip()
     df["_alias_normalized"] = df["model_original"].apply(normalize_alias)
 
-    # 우리 6개 모델 후보로 보이는데 D-MAP에 등록 안 된 새 차명이 있으면, 조용히 버리지 않고 바로 알림
+    # 서비스 지원 모델 후보로 보이는데 D-MAP에 등록 안 된 새 차명이 있으면, 조용히 버리지 않고 바로 알림
+
     candidate_df = df[df["model_original"].apply(looks_like_target_model)].copy()
-    candidate_df["_has_mapping"] = candidate_df["_alias_normalized"].isin(mapping_lookup.keys())
-    unmapped = (
-        candidate_df[~candidate_df["_has_mapping"]]["model_original"].dropna().drop_duplicates().tolist()
+
+    candidate_df["_has_mapping"] = (
+    candidate_df["_alias_normalized"].isin(mapping_lookup.keys())
     )
+
+    candidate_df["_is_excluded"] = (
+        candidate_df["_alias_normalized"].apply(
+            lambda alias: ("DEFECT", alias) in EXCLUDED
+        )
+    )
+
+    unmapped = (
+        candidate_df[
+            ~candidate_df["_has_mapping"]
+            & ~candidate_df["_is_excluded"]
+        ]["model_original"]
+        .dropna()
+        .drop_duplicates()
+        .tolist()
+    )
+
     if unmapped:
         raise ValueError(
-            f"{path.name}\n우리 6개 모델처럼 보이지만 D-MAP에 등록되지 않은 DEFECT alias가 있습니다:\n"
+            f"{path.name}\n 서비스 지원 모델처럼 보이지만 D-MAP에 등록되지 않은 DEFECT alias가 있습니다:\n"
             + "\n".join(f"- {name}" for name in unmapped)
         )
 
@@ -253,7 +273,7 @@ def preprocess_one_file(path, mapping_lookup, loaded_at):
         lambda a: get_mapping_value(a, "manufacturer_std")
     )
 
-    excluded_count = int((mapped_df["_match_status"] == "제외").sum())  # 예: "아반떼(AVANTE) 순찰차" 같은 제외 차량 수
+    excluded_count = int(candidate_df["_is_excluded"].sum())  # 예: "아반떼(AVANTE) 순찰차" 같은 제외 차량 수
 
     # 검증완료인 매핑만 실제 서비스에 사용
     verified_df = mapped_df[mapped_df["_match_status"] == "검증완료"].copy()
@@ -263,10 +283,15 @@ def preprocess_one_file(path, mapping_lookup, loaded_at):
 
     # 원문에 적힌 제작사가 있는 경우에만, D-MAP이 기대하는 제조사와 같은지 검사
     verified_df["_manufacturer_for_check"] = verified_df["manufacturer"].apply(normalize_manufacturer_for_check)
+
     mismatch = verified_df[
-        verified_df["manufacturer"].notna()
-        & (verified_df["_manufacturer_for_check"] != verified_df["_expected_manufacturer"])
+        verified_df["_manufacturer_for_check"].notna()
+        & (
+            verified_df["_manufacturer_for_check"]
+            != verified_df["_expected_manufacturer"]
+        )
     ]
+
     if not mismatch.empty:
         examples = mismatch[["제작사", "model_original", "_expected_manufacturer"]].drop_duplicates().head(10)
         raise ValueError(f"{path.name}\n원천 제작사와 D-MAP 표준 제작사가 충돌합니다:\n{examples.to_string(index=False)}")
@@ -318,7 +343,7 @@ def validate_final_result(result, source_infos):
         if result[column].isna().any():
             raise ValueError(f"필수 컬럼 '{column}'에 결측이 있습니다.")
 
-    expected_model_keys = {"HYU_AVANTE", "HYU_SONATA", "HYU_GRANDEUR", "KIA_K5", "KIA_SPORTAGE", "KIA_SORENTO"}
+    expected_model_keys = set(MODEL_MASTER)
     actual_model_keys = set(result["model_key"].unique())
 
     unexpected = actual_model_keys - expected_model_keys

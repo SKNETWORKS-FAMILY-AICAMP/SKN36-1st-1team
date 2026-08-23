@@ -1,37 +1,163 @@
 ﻿sales_year,manufacturer,model_original,model_key,domestic_sales_count,verification_status,source_url,loaded_at
-2020,기아,K5,KIA_K5,84550.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-23
-2021,기아,K5,KIA_K5,59499.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-23
-2022,기아,K5,KIA_K5,31498.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-23
-2023,기아,K5,KIA_K5,34579.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-23
-2024,기아,K5,KIA_K5,33837.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-23
-2025,기아,K5,KIA_K5,36598.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-23
-2020,기아,스포티지,KIA_SPORTAGE,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-23
-2021,기아,스포티지,KIA_SPORTAGE,39762.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-23
-2022,기아,스포티지,KIA_SPORTAGE,55394.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-23
-2023,기아,스포티지,KIA_SPORTAGE,69749.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-23
-2024,기아,스포티지,KIA_SPORTAGE,74255.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-23
-2025,기아,스포티지,KIA_SPORTAGE,74517.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-23
-2020,기아,쏘렌토,KIA_SORENTO,82275.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-23
-2021,기아,쏘렌토,KIA_SORENTO,69934.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-23
-2022,기아,쏘렌토,KIA_SORENTO,68902.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-23
-2023,기아,쏘렌토,KIA_SORENTO,85811.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-23
-2024,기아,쏘렌토,KIA_SORENTO,94538.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-23
-2025,기아,쏘렌토,KIA_SORENTO,100002.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-23
-2020,현대자동차,그랜저,HYU_GRANDEUR,145463.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-23
-2021,현대자동차,그랜저,HYU_GRANDEUR,89084.0,교차검증,https://www.insight.co.kr/news/376211,2026-08-23
-2022,현대자동차,그랜저,HYU_GRANDEUR,67030.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-23
-2023,현대자동차,그랜저,HYU_GRANDEUR,113062.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-23
-2024,현대자동차,그랜저,HYU_GRANDEUR,71656.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-23
-2025,현대자동차,그랜저,HYU_GRANDEUR,71775.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-23
-2020,현대자동차,쏘나타,HYU_SONATA,67440.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-23
-2021,현대자동차,쏘나타,HYU_SONATA,,보완필요,https://www.insight.co.kr/news/376211,2026-08-23
-2022,현대자동차,쏘나타,HYU_SONATA,48308.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-23
-2023,현대자동차,쏘나타,HYU_SONATA,39641.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-23
-2024,현대자동차,쏘나타,HYU_SONATA,57355.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-23
-2025,현대자동차,쏘나타,HYU_SONATA,52435.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-23
-2020,현대자동차,아반떼,HYU_AVANTE,87731.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-23
-2021,현대자동차,아반떼,HYU_AVANTE,,보완필요,https://www.insight.co.kr/news/376211,2026-08-23
-2022,현대자동차,아반떼,HYU_AVANTE,58743.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-23
-2023,현대자동차,아반떼,HYU_AVANTE,65364.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-23
-2024,현대자동차,아반떼,HYU_AVANTE,56890.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-23
-2025,현대자동차,아반떼,HYU_AVANTE,79335.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-23
+2020,기아,EV3,KIA_EV3,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,EV3,KIA_EV3,,보완필요,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,EV3,KIA_EV3,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,EV3,KIA_EV3,,보완필요,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,EV3,KIA_EV3,12851.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,EV3,KIA_EV3,21212.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,EV6,KIA_EV6,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,EV6,KIA_EV6,,보완필요,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,EV6,KIA_EV6,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,EV6,KIA_EV6,17227.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,EV6,KIA_EV6,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,EV6,KIA_EV6,,보완필요,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,K3,KIA_K3,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,K3,KIA_K3,,보완필요,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,K3,KIA_K3,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,K3,KIA_K3,13204.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,K3,KIA_K3,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,K3,KIA_K3,,보완필요,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,K5,KIA_K5,84550.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,K5,KIA_K5,59499.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,K5,KIA_K5,31498.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,K5,KIA_K5,34579.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,K5,KIA_K5,33837.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,K5,KIA_K5,36598.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,K7,KIA_K7,41048.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,K7,KIA_K7,,보완필요,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,K7,KIA_K7,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,K7,KIA_K7,,보완필요,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,K7,KIA_K7,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,K7,KIA_K7,,보완필요,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,K8,KIA_K8,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,K8,KIA_K8,46741.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,K8,KIA_K8,45650.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,K8,KIA_K8,40437.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,K8,KIA_K8,32734.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,K8,KIA_K8,28154.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,니로,KIA_NIRO,21239.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,니로,KIA_NIRO,,보완필요,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,니로,KIA_NIRO,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,니로,KIA_NIRO,23475.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,니로,KIA_NIRO,14978.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,니로,KIA_NIRO,13600.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,레이,KIA_RAY,28530.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,레이,KIA_RAY,35956.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,레이,KIA_RAY,44566.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,레이,KIA_RAY,50930.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,레이,KIA_RAY,48991.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,레이,KIA_RAY,48654.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,모닝,KIA_MORNING,38766.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,모닝,KIA_MORNING,30530.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,모닝,KIA_MORNING,29380.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,모닝,KIA_MORNING,25879.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,모닝,KIA_MORNING,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,모닝,KIA_MORNING,,보완필요,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,봉고 III,KIA_BONGO3,61906.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,봉고 III,KIA_BONGO3,59729.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,봉고 III,KIA_BONGO3,64826.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,봉고 III,KIA_BONGO3,62919.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,봉고 III,KIA_BONGO3,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,봉고 III,KIA_BONGO3,36030.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,셀토스,KIA_SELTOS,49481.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,셀토스,KIA_SELTOS,40090.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,셀토스,KIA_SELTOS,43095.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,셀토스,KIA_SELTOS,50837.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,셀토스,KIA_SELTOS,61897.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,셀토스,KIA_SELTOS,55917.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,스포티지,KIA_SPORTAGE,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,스포티지,KIA_SPORTAGE,39762.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,스포티지,KIA_SPORTAGE,55394.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,스포티지,KIA_SPORTAGE,69749.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,스포티지,KIA_SPORTAGE,74255.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,스포티지,KIA_SPORTAGE,74517.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,쏘렌토,KIA_SORENTO,82275.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,쏘렌토,KIA_SORENTO,69934.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,쏘렌토,KIA_SORENTO,68902.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,쏘렌토,KIA_SORENTO,85811.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,쏘렌토,KIA_SORENTO,94538.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,쏘렌토,KIA_SORENTO,100002.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,기아,카니발,KIA_CARNIVAL,64195.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916788,2026-08-24
+2021,기아,카니발,KIA_CARNIVAL,73503.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=937543,2026-08-24
+2022,기아,카니발,KIA_CARNIVAL,59058.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959122,2026-08-24
+2023,기아,카니발,KIA_CARNIVAL,69857.0,공식자료,https://www.hyundaimotorgroup.com/ko/amp/CONT0000000000128738,2026-08-24
+2024,기아,카니발,KIA_CARNIVAL,82748.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167224,2026-08-24
+2025,기아,카니발,KIA_CARNIVAL,78218.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/kia-2025-sales-3135803-units,2026-08-24
+2020,현대자동차,그랜드 스타렉스,HYU_GRAND_STAREX,36190.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,그랜드 스타렉스,HYU_GRAND_STAREX,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,그랜드 스타렉스,HYU_GRAND_STAREX,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,그랜드 스타렉스,HYU_GRAND_STAREX,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,그랜드 스타렉스,HYU_GRAND_STAREX,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,그랜드 스타렉스,HYU_GRAND_STAREX,,보완필요,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,그랜저,HYU_GRANDEUR,145463.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,그랜저,HYU_GRANDEUR,89084.0,교차검증,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,그랜저,HYU_GRANDEUR,67030.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,그랜저,HYU_GRANDEUR,113062.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,그랜저,HYU_GRANDEUR,71656.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,그랜저,HYU_GRANDEUR,71775.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,스타리아,HYU_STARIA,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,스타리아,HYU_STARIA,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,스타리아,HYU_STARIA,33459.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,스타리아,HYU_STARIA,39780.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,스타리아,HYU_STARIA,41118.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,스타리아,HYU_STARIA,37030.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,싼타페,HYU_SANTAFE,57578.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,싼타페,HYU_SANTAFE,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,싼타페,HYU_SANTAFE,28705.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,싼타페,HYU_SANTAFE,51343.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,싼타페,HYU_SANTAFE,77161.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,싼타페,HYU_SANTAFE,57889.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,쏘나타,HYU_SONATA,67440.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,쏘나타,HYU_SONATA,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,쏘나타,HYU_SONATA,48308.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,쏘나타,HYU_SONATA,39641.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,쏘나타,HYU_SONATA,57355.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,쏘나타,HYU_SONATA,52435.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,아반떼,HYU_AVANTE,87731.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,아반떼,HYU_AVANTE,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,아반떼,HYU_AVANTE,58743.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,아반떼,HYU_AVANTE,65364.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,아반떼,HYU_AVANTE,56890.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,아반떼,HYU_AVANTE,79335.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,아이오닉 5,HYU_IONIQ5,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,아이오닉 5,HYU_IONIQ5,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,아이오닉 5,HYU_IONIQ5,27399.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,아이오닉 5,HYU_IONIQ5,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,아이오닉 5,HYU_IONIQ5,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,아이오닉 5,HYU_IONIQ5,,보완필요,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,아이오닉 6,HYU_IONIQ6,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,아이오닉 6,HYU_IONIQ6,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,아이오닉 6,HYU_IONIQ6,11289.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,아이오닉 6,HYU_IONIQ6,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,아이오닉 6,HYU_IONIQ6,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,아이오닉 6,HYU_IONIQ6,,보완필요,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,캐스퍼,HYU_CASPER,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,캐스퍼,HYU_CASPER,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,캐스퍼,HYU_CASPER,48002.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,캐스퍼,HYU_CASPER,45451.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,캐스퍼,HYU_CASPER,41788.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,캐스퍼,HYU_CASPER,18269.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,코나,HYU_KONA,,보완필요,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,코나,HYU_KONA,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,코나,HYU_KONA,,보완필요,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,코나,HYU_KONA,34707.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,코나,HYU_KONA,28459.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,코나,HYU_KONA,32738.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,투싼,HYU_TUCSON,36144.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,투싼,HYU_TUCSON,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,투싼,HYU_TUCSON,32890.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,투싼,HYU_TUCSON,43744.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,투싼,HYU_TUCSON,55257.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,투싼,HYU_TUCSON,53901.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,팰리세이드,HYU_PALISADE,64791.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,팰리세이드,HYU_PALISADE,,보완필요,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,팰리세이드,HYU_PALISADE,49737.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,팰리세이드,HYU_PALISADE,41093.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,팰리세이드,HYU_PALISADE,,보완필요,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,팰리세이드,HYU_PALISADE,60909.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
+2020,현대자동차,포터,HYU_PORTER,95194.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=916786,2026-08-24
+2021,현대자동차,포터,HYU_PORTER,92218.0,교차검증,https://www.insight.co.kr/news/376211,2026-08-24
+2022,현대자동차,포터,HYU_PORTER,92411.0,공식자료,https://www.newswire.co.kr/newsRead.php?no=959120,2026-08-24
+2023,현대자동차,포터,HYU_PORTER,97675.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000128764,2026-08-24
+2024,현대자동차,포터,HYU_PORTER,69267.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/CONT0000000000167235,2026-08-24
+2025,현대자동차,포터,HYU_PORTER,56538.0,공식자료,https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-sales-4138180-units-2025,2026-08-24
