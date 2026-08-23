@@ -50,10 +50,15 @@ CREATE TABLE IF NOT EXISTS model_master (
 -- 원천별 차명(alias) → 표준 모델 매핑
 -- manufacturer_std/model_std/manufacturer_support_url은
 -- model_master로 정규화되어 이 테이블엔 없음(JOIN으로 조회)
+--
+-- model_key는 NULL 허용: match_status='검증완료'인 행은 반드시
+-- 값이 있어야 하지만, '제외'/'검토중' 행은 표준 모델에 매핑되지
+-- 않은 상태라 model_key가 비어있을 수 있음(load_to_mysql.py 검증
+-- 로직 및 실제 데이터 기준, 실제로 1건 존재)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS model_mapping (
     mapping_id          BIGINT       NOT NULL AUTO_INCREMENT,
-    model_key           VARCHAR(50)  NOT NULL,
+    model_key           VARCHAR(50)  NULL,
     generation_name     VARCHAR(100) NULL,
     source_type         VARCHAR(20)  NOT NULL,
     alias_name          VARCHAR(255) NOT NULL,

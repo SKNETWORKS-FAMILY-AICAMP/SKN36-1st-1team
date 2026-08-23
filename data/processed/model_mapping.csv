@@ -1,0 +1,95 @@
+﻿model_key,manufacturer_std,model_std,generation_name,source_type,alias_name,alias_normalized,match_status,review_note,manufacturer_support_url
+KIA_K5,기아,K5,,DEFECT,K5,k5,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_K5,기아,K5,,DEFECT,K5 하이브리드,k5 하이브리드,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,,DEFECT,스포티지,스포티지,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,,DEFECT,스포티지 하이브리드,스포티지 하이브리드,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,,DEFECT,쏘렌토,쏘렌토,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,,DEFECT,쏘렌토 GL,쏘렌토 gl,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,,DEFECT,쏘렌토 GLS,쏘렌토 gls,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,,DEFECT,쏘렌토 하이브리드,쏘렌토 하이브리드,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+,현대자동차,,,DEFECT,아반떼 (AVANTE) 순찰차,아반떼 avante 순찰차,제외,특수용도 차량(순찰차),https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,,DEFECT,그랜저,그랜저,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,,DEFECT,그랜저(GRANDEUR),그랜저 grandeur,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,,DEFECT,그랜저(GRANDEUR) 하이브리드,그랜저 grandeur 하이브리드,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,,DEFECT,그랜저 하이브리드,그랜저 하이브리드,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,,DEFECT,그랜저 하이브리드 (GRANDEUR HYBRID),그랜저 하이브리드 grandeur hybrid,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,,DEFECT,그랜저 하이브리드(GRANDEUR HYBRID),그랜저 하이브리드 grandeur hybrid,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타,쏘나타,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타 N 라인 (SONATA N Line),쏘나타 n 라인 sonata n line,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타 (SONATA),쏘나타 sonata,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타(SONATA),쏘나타 sonata,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타 (SONATA) 하이브리드,쏘나타 sonata 하이브리드,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타(SONATA) 하이브리드,쏘나타 sonata 하이브리드,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타 하이브리드 (SONATA HYBRID),쏘나타 하이브리드 sonata hybrid,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,DEFECT,쏘나타 하이브리드(SONATA HYBRID),쏘나타 하이브리드 sonata hybrid,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,뉴아반떼XD(NEW AVANTE XD),뉴아반떼xd new avante xd,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 (AVANTE),아반떼 avante,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼(AVANTE),아반떼 avante,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 Hybrid(AVANTE Hybrid),아반떼 hybrid avante hybrid,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 Hybrid N Line (AVANTE Hybrid N Line),아반떼 hybrid n line avante hybrid n line,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 N (AVANTE N),아반떼 n avante n,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 N(AVANTE N),아반떼 n avante n,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 N 라인 (AVANTE N Line),아반떼 n 라인 avante n line,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 N 라인(AVANTE N Line),아반떼 n 라인 avante n line,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 스포츠(AVANTE SPORT),아반떼 스포츠 avante sport,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 쿠페 (AVANTE COUPE),아반떼 쿠페 avante coupe,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,DEFECT,아반떼 하이브리드(AVANTE HYBRID),아반떼 하이브리드 avante hybrid,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+KIA_K5,기아,K5,DL3,REC,K5 (DL3),k5 dl3,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_K5,기아,K5,DL3,REC,K5(DL3),k5 dl3,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_K5,기아,K5,DL3,REC,K5 (DL3 PE),k5 dl3 pe,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_K5,기아,K5,TF,REC,K5(TF),k5 tf,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_K5,기아,K5,TF,REC,K5(TF HEV),k5 tf hev,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_K5,기아,K5,TF,REC,K5 하이브리드(TF HEV),k5 하이브리드 tf hev,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,KM,REC,스포티지(KM),스포티지 km,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,NQ5,REC,스포티지 (NQ5),스포티지 nq5,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,NQ5,REC,스포티지(NQ5),스포티지 nq5,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,QL,REC,스포티지 (QL),스포티지 ql,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,QL,REC,스포티지(QL),스포티지 ql,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,QL,REC,스포티지 (QL/QL PE),스포티지 ql ql pe,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,SL,REC,스포티지(SL),스포티지 sl,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,NQ5,REC,스포티지 하이브리드 (NQ5 HEV),스포티지 하이브리드 nq5 hev,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,BL,REC,쏘렌토(BL),쏘렌토 bl,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,MQ4,REC,쏘렌토 (MQ4),쏘렌토 mq4,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,MQ4,REC,쏘렌토(MQ4),쏘렌토 mq4,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,MQ4,REC,쏘렌토 (MQ4 PE),쏘렌토 mq4 pe,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,UM,REC,쏘렌토 (UM/UM PE),쏘렌토 um um pe,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,XM,REC,쏘렌토(XM),쏘렌토 xm,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,MQ4,REC,쏘렌토 하이브리드(MQ4 HEV),쏘렌토 하이브리드 mq4 hev,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,MQ4,REC,쏘렌토 하이브리드(MQ4 HEV PE),쏘렌토 하이브리드 mq4 hev pe,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,XM,REC,쏘렌토R (XM 페이스리프트),쏘렌토r xm 페이스리프트,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,XM,REC,쏘렌토R(XM페이스리프트),쏘렌토r xm페이스리프트,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,UM,REC,올뉴쏘렌토(UM),올뉴쏘렌토 um,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+HYU_GRANDEUR,현대자동차,그랜저,GN7,REC,그랜저(GN7),그랜저 gn7,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,HG,REC,그랜저(HG),그랜저 hg,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,IG,REC,그랜저(IG),그랜저 ig,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,GN7,REC,그랜저 하이브리드 (GN7 HEV),그랜저 하이브리드 gn7 hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,IG,REC,그랜저 하이브리드(IG HEV),그랜저 하이브리드 ig hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_GRANDEUR,현대자동차,그랜저,GN7,REC,그랜저하이브리드(GN7 HEV),그랜저하이브리드 gn7 hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,DN8,REC,쏘나타 (DN8),쏘나타 dn8,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,DN8,REC,쏘나타(DN8),쏘나타 dn8,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,LF,REC,쏘나타(LF),쏘나타 lf,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,YF,REC,쏘나타(YF),쏘나타 yf,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,LF,REC,쏘나타 플러그인 하이브리드(LF PHEV),쏘나타 플러그인 하이브리드 lf phev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,LF,REC,쏘나타 하이브리드 (LF HEV),쏘나타 하이브리드 lf hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,LF,REC,쏘나타 하이브리드(LF HEV),쏘나타 하이브리드 lf hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,YF,REC,쏘나타 하이브리드 (YF HEV),쏘나타 하이브리드 yf hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,YF/YFE,REC,쏘나타 하이브리드(YFE),쏘나타 하이브리드 yfe,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,DN8,REC,쏘나타N Line (DN8),쏘나타n line dn8,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,AD,REC,아반떼(AD),아반떼 ad,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼(CN7),아반떼 cn7,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,HD,REC,아반떼(HD),아반떼 hd,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,REC,아반떼 N,아반떼 n,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼 N(CN7 N),아반떼 n cn7 n,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,REC,아반떼 N Line,아반떼 n line,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼 N-Line(CN7 N-Line),아반떼 n line cn7 n line,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼 하이브리드 (CN7 HEV),아반떼 하이브리드 cn7 hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼 하이브리드(CN7 HEV),아반떼 하이브리드 cn7 hev,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼N (CN7 KN),아반떼n cn7 kn,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼N (CN7 N),아반떼n cn7 n,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,CN7,REC,아반떼N (CN7N),아반떼n cn7n,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+KIA_K5,기아,K5,,SALES,K5,k5,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SPORTAGE,기아,스포티지,,SALES,스포티지,스포티지,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+KIA_SORENTO,기아,쏘렌토,,SALES,쏘렌토,쏘렌토,검증완료,원천 차명 직접 대조,https://www.kia.com/kr/customer-service/center/default
+HYU_GRANDEUR,현대자동차,그랜저,,SALES,그랜저,그랜저,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_SONATA,현대자동차,쏘나타,,SALES,쏘나타,쏘나타,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
+HYU_AVANTE,현대자동차,아반떼,,SALES,아반떼,아반떼,검증완료,원천 차명 직접 대조,https://www.hyundai.com/kr/ko/e/customer/center
