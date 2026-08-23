@@ -32,6 +32,7 @@ from datetime import datetime      # "언제 전처리했는지" 날짜를 기�
 from pathlib import Path           # 파일/폴더 경로를 다루는 도구
 
 import pandas as pd                # 엑셀 읽기 · 표 정리 · CSV 저장을 담당하는 라이브러리
+from src.preprocessing.model_mapping import MODEL_MASTER, SALES_ALIASES
 
 
 # ── 1. 프로젝트 폴더 위치 ─────────────────────────────────────────
@@ -58,12 +59,24 @@ KIA_SHEET = "기아_판매량"
 SOURCE_SHEET = "출처"   # 어느 자료를 근거로 삼았는지 적힌 시트
 
 
-# ── 4. 우리 서비스가 다루는 6개 모델 ────────────────────────────────
-# 판매량 파일에는 다른 모델도 있을 수 있지만, 아래 6개만 골라서 사용합니다.
-TARGET_MODELS = {
-    "현대자동차": ["아반떼", "쏘나타", "그랜저"],
-    "기아": ["K5", "스포티지", "쏘렌토"],
-}
+# ── 4. 현재 서비스 지원 판매 모델 ──────────────────────────────
+# model_mapping.py의 SALES_ALIASES를 기준으로 자동 구성합니다.
+# 지원 모델이 늘어나도 이 목록을 다시 직접 수정할 필요가 없습니다.
+TARGET_MODELS = {}
+
+for model_key, aliases in SALES_ALIASES.items():
+    manufacturer, _ = MODEL_MASTER[model_key]
+
+    if len(aliases) != 1:
+        raise ValueError(
+            f"{model_key}: SALES alias는 현재 모델당 1개여야 합니다. "
+            f"현재: {aliases}"
+        )
+
+    TARGET_MODELS.setdefault(
+        manufacturer,
+        [],
+    ).append(aliases[0])
 
 
 # ── 5. verification_status(검증 상태) 칸에 들어갈 수 있는 값 ─────────
@@ -278,7 +291,7 @@ def validate_vehicle_sales(df):
     print("\n" + "=" * 70 + "\nD-SALES 정합성 검사\n" + "=" * 70)
 
     # 1) 전체 행 수: 6개 모델 × 6개 연도 = 36행이어야 함
-    expected_rows = 6 * len(ANALYSIS_YEARS)
+    expected_rows = len(MODEL_MASTER) * len(ANALYSIS_YEARS)
     print(f"예상 행 수 : {expected_rows}")
     print(f"실제 행 수 : {len(df)}")
     if len(df) != expected_rows:

@@ -24,6 +24,11 @@ import unicodedata              # 겉보기엔 같은 글자인데 컴퓨터 내
 
 import pandas as pd             # CSV 읽기·필터링·정렬·저장을 담당하는 라이브러리
 
+from src.preprocessing.model_mapping import (
+    EXCLUDED,
+    looks_like_target_model as mapping_looks_like_target_model,
+)
+
 
 # ── 1. 프로젝트 폴더 위치 ─────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -92,16 +97,14 @@ def normalize_reason_text(value):
 
 # ── 8. "우리 6개 모델처럼 보이는지" 1차로 걸러내는 함수 ───────────────
 def looks_like_target_model(model_name):
-    """이 함수는 model_key를 정하지 않습니다. 그냥 "D-MAP에 새로 등록해야 할지도 모르는
-    우리 대상 모델 후보"를 놓치지 않고 찾아내기 위한 1차 필터일 뿐입니다."""
-    name = normalize_alias(model_name)
-
-    if any(keyword in name for keyword in ["아반떼", "쏘나타", "그랜저", "스포티지", "쏘렌토"]):
-        return True
-
-    # K5는 단순히 "k5 in name"으로 검사하면 SLK55, AK550 같은 전혀 다른 차량도 걸릴 수 있어서,
-    # 문자열이 정확히 "k5"로 시작할 때만("k5" 뒤에 공백이 오거나 문자열이 끝날 때만) 인정합니다.
-    return re.match(r"^k5(?:\s|$)", name) is not None
+    """
+    현재 서비스 지원 리콜 모델 후보인지 확인합니다.
+    실제 후보 판별 규칙은 model_mapping.py를 공통으로 사용합니다.
+    """
+    return mapping_looks_like_target_model(
+        model_name,
+        "REC",
+    )
 
 
 # ── 9. 사람이 직접 원문을 확인해서 분류해둔 리콜사유 목록 ─────────────
@@ -119,6 +122,109 @@ def looks_like_target_model(model_name):
 #   결측을 채운 값이 다시 get_recall_category()를 통과할 때 에러가 나지 않게 합니다.
 REVIEWED_REASON_CATEGORY = {
     # 형식: "원문 리콜사유의 SHA-256 해시": "분류",  # 그 사유의 실제 내용(사람이 원문을 읽고 남긴 요약)
+    "e603ccf629c6c893d06fbdc33595ff4bc13aa7b8274cf82eefefe66cff5b9246": "연료장치",
+"f1aaf0942ee7e677d0eaf2a867c70f56802a619011cfd640efae5da725b54f99": "전기·전자장치",
+"e2022f62ac45a6069f2b97268106c1f3937ee4e531ef6dfee7f9e1282e756900": "전기·전자장치",
+"7dd75d4f546be8a070c9a55ae9faeeafd8ca15414aa085bd4fe630a1b9a07efc": "연료장치",
+"e35e7afd9ad12a3c9301766ea49e329b60ddd70abb1598e5db96f73a20bf73a2": "연료장치",
+"b4a5093714a3836c96cc7643b4a246029fdd9037bdc8826beacaf9187f3147c9": "등화장치",
+"68d31ef63599d7dc7c75ed79fef09f4bc65575f116e032578e672bbb90d62f68": "엔진·동력장치",
+"7e8f4969c79645e15f2387c6e8675a1bd54762e6f551047bb226c36ef4ff854d": "전기·전자장치",
+"60fcf8012af4572ca8d89da9eeca8f73a6a60edda5cf3b0013ea01fdb45a453c": "제동장치",
+"99835ed21f96d9b43f119dad9a79a6b5683176c82e1dcb6777a5178c07da7215": "엔진·동력장치",
+"09bc601b649a6ae0cf1d7a79a8066e3cbbc123e6c8ce72cf56ad9c20814610b3": "차체·구조",
+"8cc97792e9a096fc684cc0478ea97c673a841e891950d9f8b085b8be92580c04": "전기·전자장치",
+"51bcd37aa23464f6dce4dee4b6e5b7d51d83428ddb1b688e6e829955231aec8a": "탑승자보호",
+"9f8b8e601adc447214c1fc05212a19afeecfde85dca3164f11d355761eeb30c5": "탑승자보호",
+"d40869b972baf7fbf34d9d53bbbc6186ef9bc6db7e1a82c9e0c0a0af1899b578": "연료장치",
+"82b73818c0adbddde1bfed13e54d55246088b85c6575dc177c366a70201f8391": "엔진·동력장치",
+"56b79d01d5285ed17c6b5b6608bbdb8714c253920bb8fb36285328febb0232c5": "차체·구조",
+"90d5dea3480efbb75b6122523f3b8068bb14bacef7dd732dccd4a272d25877d0": "엔진·동력장치",
+"22a6027eb327b1d0d453d7287124e147a67de8d9b24982f7539e9630891b5f71": "엔진·동력장치",
+"e126832fcd76dade61157c307540d87a0e25bd83bb85ebe2a13e88aea0466134": "탑승자보호",
+"c4e421361db7677a1381cb959a72d52d6c7eecaf7ddc07a0641891d9a80ec65a": "탑승자보호",
+"19102141ce82b027c54b81f2d06419389be4c68b9d334af7a6badab2a954ce71": "탑승자보호",
+"0c166dce3c1b81aa9509a4228e9c0b060f5fee0ccd5c029d912161fee25d6904": "엔진·동력장치",
+"656e10e385366121cec87f61c46eabc44e0ff89bf4a84c5700477bb9d74b497d": "전기·전자장치",
+"6ded33533ba332656166692e06816faff2119ff6a2a8ed2a49ec477f8d84acf8": "탑승자보호",
+"5813015ac754d0538f38de465dc35594b64da12435712dd4fff3e35aaeef4f54": "전기·전자장치",
+"0cbacc3e2c087d0af101c89499ee4f19f1e441af723ed91f1582a05714066fce": "엔진·동력장치",
+"f7c845813c114621760b1d121c25e6bcfbd81e9a596697322bd8b52fc15b4f3c": "탑승자보호",
+"15489441d14d70c9223117d78e453cf9f2a15b29eaf3247892cff7ee5463866d": "탑승자보호",
+"79f7bbe7e062704d73be2e9804f534242f2ac0bfb701e90f62a18cdbab09d212": "전기·전자장치",
+"8aa92f0ed4a1c0d499e738b7653ce05229521f63dccb84148beface4fcae5151": "엔진·동력장치",
+"846f03127f54d2e1dcea783d9a47f5baf30b4fae9f2dc2fef517933f782a6b68": "탑승자보호",
+"61e337decf75750cdd53807061121c5d72499a12c076ca6ca89676d026587910": "차체·구조",
+"640bcff9d18c9cc6608f7df541d948bbbd70ec7187a72e3ddba6d9dad58997e5": "전기·전자장치",
+"fa91b34dc8e903c1a77643787e027130380101f048a5838b5504d066d0b2babd": "제동장치",
+"52cb110eff16006e6fc810dc77dba84f3a2aa70d9c94ad2f7bb43cf083e22553": "차체·구조",
+"dbf07160b0718cf6450e8eb5e4bc3d2cb3102ce6d1c28d4915cbb80b202223e0": "등화장치",
+"b89e41387c9899aeb52902dd07cfb66b53800f958614bc25c6c34614b2ea6395": "탑승자보호",
+"3c3f5e3a8ff98668a78fe3ab87ade3a18959589a74f627d155c00311a16fccc3": "전기·전자장치",
+"128ba3c6de473be10583873ebf47a1efe543ce3e2bc34e67f56f5facf11ee2a5": "전기·전자장치",
+"fdd163765867811606bf9c73b92c359d7317e4a0c64269b80613acb6e0081060": "탑승자보호",
+"afc0c0d8d8deb1c4e7d5d7f755d3a18f88abbab0e3874db13ec91698af980ff3": "전기·전자장치",
+"e957aec0484251a620f178e128cee1844b5ab4ad4591312638797cb0db97f447": "엔진·동력장치",
+"906b356887648f3f32447645db02ea80ed825fc3314ced5a02a8a558db495956": "엔진·동력장치",
+"fb34e965601a29e9ae22b8906a0213d9d6d161f89f53c32ce6503dbf0704abfe": "엔진·동력장치",
+"2428caf36e3c002f62f969f0b6b9b3d54969705faa7dc0ca60f0be08feacbe89": "조향장치",
+"f869358424a9068597976716bbbb1473bab3f261f0f6a7001190a8e6678430af": "조향장치",
+"5e0a40239b29cd41edcbc51128ab34b59b3138b95e48be8b1d7fac5ac2837c31": "전기·전자장치",
+"805896a2c6b16e98e90310ad61c35a766ceee0184c0c143c16bb7829fd369e75": "전기·전자장치",
+"d0a54e75ce6c4776e8dda8e6a1355180cdbb71dc8bb61e6c56ed1baf704746ad": "탑승자보호",
+"705ae1d5b1437603c7575380d208366d7fdd0884386223b92913af2b9ef728de": "전기·전자장치",
+"abd8acfeea89b9aedd0035c6f918f0994ee651bcf6882bccd4b2e53bc939c8eb": "탑승자보호",
+"71bbc9848cf66dc836e13f0de660a39cba51baf07d1a89e8afdad38ef5a5ca4a": "엔진·동력장치",
+"3413aaa886f0df5b91b79bf567ea899968f4134403288ef46ad6ac38593ae029": "엔진·동력장치",
+"4fb4336ea10cbd453cea82aead717e3f4bde584a5f25ca4e23f5f3cb7ad4dfa0": "등화장치",
+"833e8ea5572e727aa9713e6897357061045047c917ef6ba43841974d102ba9f1": "엔진·동력장치",
+"1e3a56a4f7b936f13ae712c019e5774420f9bfcc5559a4308eb99ddf80f1544d": "차체·구조",
+"91563db377f7f5e84a1c6cb0e141b972a71c9266c636b0abac22b591af943190": "엔진·동력장치",
+"20c91f85a45b3f82b2e5a07193e1dc0f6d874c97f764181f01a238af0f0be5f8": "전기·전자장치",
+"eb64027994844b674a3695547a5402c18ccd5ef3ed2ba83606016cb857037069": "엔진·동력장치",
+"8ed84eea437b8eb7dc04852f30d255138f8d06899246e553b9acd323b1b4b8d8": "엔진·동력장치",
+"fefd59bdb50e440f5fdc313f77a2d9fdfe83321ad79b5cd1095d14e6aed96943": "연료장치",
+"ed2d9858b93d7a709d3b153ba9a5c4d4dd46089dd1487c98df88937dfe732028": "연료장치",
+"afd1a7bd8f173ee53e3f29cbc829f316730045cc6db0a65fccbead6e1dc326bb": "연료장치",
+"3b3894edd5ee626ad3a48bd7083eb1707bdcaf0c43c3f570bf5a5afa809276d2": "제동장치",
+"bd70f44866ebdee003d37bfb4650fbebbfb5f16633d936eda3ca7e515b512204": "차체·구조",
+"3dbf7a52220c1ac8d0ab57bf53e16d78980ad00c5b6df5b5fcb745c2594eb8dc": "탑승자보호",
+"0515958ce27bc9c67040d78e52259a5dd6314640bdaf87088c76532f9022d351": "전기·전자장치",
+"6edd9ec99f285f420f9f8f1a5372129e70cc2907d2f5ea796cea520a02954efe": "전기·전자장치",
+"9eabc7347792cac99d341192cb30cdc071d5e3fd0f0d04deb76619ed14df2c66": "탑승자보호",
+"69a6d9f6ea4dcf28bf472a7553884dbd22830d5befc10241343f0e85f9b0d65c": "전기·전자장치",
+"4185bbefe4796ad5ce5b6fff60d2ab3f6a9c5d8f2a692ea59f7b22e79d77d3ad": "전기·전자장치",
+"05adb118a624885699bfafb749833537dc1bf0f95ddd37b858eb514ed723fdd8": "엔진·동력장치",
+"070b5f3734879708284f2e8d2fc2d321033c096161c7736b91c8f8b49337a37f": "전기·전자장치",
+"39bd36312aeaa0ae8311ad537c5e044fa668d31593dd22ba0282b7021f9a2c4f": "전기·전자장치",
+"0f2e0c6a19902954f044fa47b97f14329d3bf31f5e3d7dd2f25b2e7f3b33e2bc": "등화장치",
+"2332597b7206dfdd1781dd73798a8ccfeabbe94153e9ed80559ffa0b270e5ff7": "전기·전자장치",
+"40af17acb534990716ba4fc998079429db31e916321405a1157dab1a2459fbf2": "전기·전자장치",
+"20cc22750da78e96d68059a0bb80fe5e5ab2b16ea38cf7401ac444a35b62e79f": "탑승자보호",
+"1262d1ae682df81b72349e056730a992d50c0bb45fc8c1406fe770d349037513": "제동장치",
+"386bb55a01fc9b08610f6b6f07c0cae6578d3ceca717ea170215d2e654c678dd": "탑승자보호",
+"d440b1610819087908b6df55f92e7348caf12a4e2a913c8aa16348c660a5d1ab": "차체·구조",
+"b1309aec7dee0873ad33771ea71c3aa93f96bba746a56a0322b3c14ec51f6daa": "차체·구조",
+"adda88efc4e38def2d5c905dfc74fbbfff05ae8a0a68a2c2395ca00e0d0e59ca": "차체·구조",
+"272d9eb27cd38a614d0d4277960161c8b15e13455219d6452d74b149c0a84694": "엔진·동력장치",
+"d42ce1b22d81f6e2084cbc0e0cab591d182db66ec7b161603a352a45cebebcdc": "차체·구조",
+"ed3caf616c16b3bb2b5cb98f6060999ca08b68a90e655fad4add820aa7dcb69a": "탑승자보호",
+"0e5aad3d9ba87236e602130b8d76508ff9f7c4b48d6f3f20c7feeec47896a160": "조향장치",
+"e04649eb656031cee3aadc4c23202eada98206c052308e6dbe3877da29147c22": "조향장치",
+"48a7700188ecbcd57d3f9c4817215400cac604f33576db4dce3b2c5075a37adb": "차체·구조",
+"f4e3e123a1822dfe48441ea20de255a12f0d67d52743adc4989e9418322f0467": "연료장치",
+"c655cfacc8b14b58ebd36a38cce327459a2e1b7110ad167045a23e93f672df71": "전기·전자장치",
+"98821bb6d4af0d7212e961dec01239104320622db2cface41ef07e1695ca9b3b": "전기·전자장치",
+"5203ec212506e3ff713bd3f71576352a0c1f38bce7f85b7e65183e99373100d6": "전기·전자장치",
+"41f6a6f23cbba7d6b60db794052808bf7bc890523993d79f674863385ed996a0": "전기·전자장치",
+"248e875f0b6472251d4154c8a6a30872acc58e94ec7144c7ebaf5bc36e135ae8": "엔진·동력장치",
+    "f591b159da3fecd5733b2fe5f2d8c817d0af217b01385135bb8b1b4692c5f182": "전기·전자장치",  # 배터리셀 제조불량으로 내부 단락/합선 및 화재 가능성
+    "363411005fe430b653c7879ef8675543a1202546365d4be5a1052749e3153f70": "탑승자보호",  # 운전석 안전띠 높이조절장치 결합부 조립 토크 미흡 가능성
+    "9de3a6b5af65525319ef660d6b23f4fc0b2d6af5a0983658b9cd5e96e6eb8140": "제동장치",  # IEB 모터 Fail Safe 로직 구성 미흡
+    "86908314aef429a3d0c73bee1bc4ff1a28fac10e83c12265dec92a2d73c07014": "전기·전자장치",  # 고전압 배터리셀 제조불량으로 내부 단락/합선 및 화재 가능성
+    "86ec537d70fc94d6f1c7428802b037b2872c888abae35a1df216c6bd26416586": "전기·전자장치",  # 알터네이터 B+ 단자 너트 불완전 체결
+    "4ec6e26b97ab0860718b8d266f7e25db3db7c709acf87b1a2db5a711e12b3e00": "제동장치",  # 브레이크 호스 공기빼기 작업 미흡으로 제동력 제어 지연
+    "88257ac45214cb58b3d107052c180347b15a5103e164c670e2ab186941acbb14": "제동장치",  # 브레이크 호스 공기빼기 작업 미흡으로 제동력 제어 지연
     "9f6c6feb09b539749fa313c46e0d0a48cab3488194c9438c0b56664f4b81cfb0": "연료장치",  # 연료펌프 제어유닛 PCB 제조불량
     "c2f09025c7fa88d81ae6802d8e8397928189a5a7a71d200b3b475ca33201dc3d": "제동장치",  # ABS/ESC 모듈 전원부 합선
     "9d45cb5dc5e008a4632121471b156277d6fba9bb26ef666fee561dcad1437cde": "전기·전자장치",  # 원격 스마트 주차 보조 제어로직
@@ -357,11 +463,27 @@ def preprocess_recall(input_path, mapping_lookup, loaded_at):
     candidate_df = df[df["차명"].apply(looks_like_target_model)].copy()
     candidate_df["_alias_normalized"] = candidate_df["차명"].apply(normalize_alias)
 
-    # 대상 모델처럼 보이는데 D-MAP에 아예 없는 새 차명이 있으면, 조용히 버리지 않고 바로 알림
-    unmapped = (
-        candidate_df[~candidate_df["_alias_normalized"].isin(mapping_lookup.keys())]["차명"]
-        .dropna().drop_duplicates().tolist()
+    candidate_df["_has_mapping"] = (
+    candidate_df["_alias_normalized"].isin(mapping_lookup.keys())
     )
+
+    candidate_df["_is_excluded"] = (
+    candidate_df["_alias_normalized"].apply(
+        lambda alias: ("REC", alias) in EXCLUDED
+        )
+    )
+
+    unmapped = (
+        candidate_df[
+            ~candidate_df["_has_mapping"]
+            & ~candidate_df["_is_excluded"]
+        ]["차명"]
+        .dropna()
+        .drop_duplicates()
+        .tolist()
+    )
+
+
     if unmapped:
         raise ValueError(
             "대상 모델처럼 보이지만 D-MAP에 없는 REC alias가 있습니다.\n\n"
@@ -438,9 +560,14 @@ def validate_result(raw_df, candidate_df, result):
 
     # 지금 검증해둔 원본(2025-12-31 누적본) 기준으로는 정확히 88건이어야 합니다.
     # (나중에 공식 파일이 새로 갱신되면 이 숫자도 다시 확인해서 바꿔야 합니다.)
-    EXPECTED_CURRENT_ROWS = 88
-    if len(result) != EXPECTED_CURRENT_ROWS:
-        raise ValueError(f"현재 검증 원본 기준 D-REC는 {EXPECTED_CURRENT_ROWS}건입니다. 실제는 {len(result)}건입니다.")
+
+    excluded_count = int(candidate_df["_is_excluded"].sum())
+    expected_rows = len(candidate_df) - excluded_count
+
+    if len(result) != expected_rows:
+        raise ValueError(
+            f"D-REC 예상 행 수는 {expected_rows}건입니다. 실제는 {len(result)}건입니다."
+        )
 
     # recall_reason은 v2.6 기준 선택 항목(결측 시 "리콜사유 미제공"으로 채워짐)이라 필수 목록에서 제외
     required_output = [

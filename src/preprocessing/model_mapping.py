@@ -45,94 +45,539 @@ MANUFACTURER_SUPPORT_URL = {
 }
 
 
-# ── 4. 우리 서비스가 지원하는 6개 모델 (model_key: (제조사, 표준 모델명)) ─
-# model_key는 "이 자동차가 어떤 모델인지"를 나타내는 우리 프로젝트만의 고유 이름표입니다.
-# 원본 데이터에서 이름이 어떻게 적혀있든, 매핑이 끝나면 전부 이 6개 중 하나로 모입니다.
+# ── 4. 우리 서비스가 지원하는 27개 모델 ─────────────────────────────
+# model_key는 각 모델을 구분하는 프로젝트 내부 표준 키입니다.
+# 원본 데이터에서 이름이 어떻게 적혀있든, 검증된 alias를 통해 아래 27개 모델 중 하나로 매핑합니다.
 MODEL_MASTER = {
-    "HYU_AVANTE":   ("현대자동차", "아반떼"),
-    "HYU_SONATA":   ("현대자동차", "쏘나타"),
-    "HYU_GRANDEUR": ("현대자동차", "그랜저"),
-    "KIA_K5":       ("기아", "K5"),
-    "KIA_SPORTAGE": ("기아", "스포티지"),
-    "KIA_SORENTO":  ("기아", "쏘렌토"),
+    # 현대자동차
+    "HYU_AVANTE":        ("현대자동차", "아반떼"),
+    "HYU_SONATA":        ("현대자동차", "쏘나타"),
+    "HYU_GRANDEUR":      ("현대자동차", "그랜저"),
+    "HYU_KONA":          ("현대자동차", "코나"),
+    "HYU_TUCSON":        ("현대자동차", "투싼"),
+    "HYU_SANTAFE":       ("현대자동차", "싼타페"),
+    "HYU_PALISADE":      ("현대자동차", "팰리세이드"),
+    "HYU_IONIQ5":        ("현대자동차", "아이오닉 5"),
+    "HYU_IONIQ6":        ("현대자동차", "아이오닉 6"),
+    "HYU_CASPER":        ("현대자동차", "캐스퍼"),
+    "HYU_GRAND_STAREX":  ("현대자동차", "그랜드 스타렉스"),
+    "HYU_STARIA":        ("현대자동차", "스타리아"),
+    "HYU_PORTER":        ("현대자동차", "포터"),
+
+    # 기아
+    "KIA_MORNING":       ("기아", "모닝"),
+    "KIA_RAY":           ("기아", "레이"),
+    "KIA_K3":            ("기아", "K3"),
+    "KIA_K5":            ("기아", "K5"),
+    "KIA_K7":            ("기아", "K7"),
+    "KIA_K8":            ("기아", "K8"),
+    "KIA_NIRO":          ("기아", "니로"),
+    "KIA_SELTOS":        ("기아", "셀토스"),
+    "KIA_SPORTAGE":      ("기아", "스포티지"),
+    "KIA_SORENTO":       ("기아", "쏘렌토"),
+    "KIA_CARNIVAL":      ("기아", "카니발"),
+    "KIA_EV3":           ("기아", "EV3"),
+    "KIA_EV6":           ("기아", "EV6"),
+    "KIA_BONGO3":        ("기아", "봉고 III"),
 }
 
 
 # ── 5. 판매량 데이터에 적힌 모델명 ───────────────────────────────
 # 판매량 원본은 이미 이름이 깔끔해서, 표준 이름 그대로 한 개씩만 있으면 됩니다.
+# ── 5. 판매량 데이터에 적힌 모델명 ───────────────────────────────
 SALES_ALIASES = {
-    "HYU_AVANTE": ["아반떼"],
-    "HYU_SONATA": ["쏘나타"],
-    "HYU_GRANDEUR": ["그랜저"],
-    "KIA_K5": ["K5"],
-    "KIA_SPORTAGE": ["스포티지"],
-    "KIA_SORENTO": ["쏘렌토"],
+    # 현대자동차
+    "HYU_AVANTE":       ["아반떼"],
+    "HYU_SONATA":       ["쏘나타"],
+    "HYU_GRANDEUR":     ["그랜저"],
+    "HYU_KONA":         ["코나"],
+    "HYU_TUCSON":       ["투싼"],
+    "HYU_SANTAFE":      ["싼타페"],
+    "HYU_PALISADE":     ["팰리세이드"],
+    "HYU_IONIQ5":       ["아이오닉 5"],
+    "HYU_IONIQ6":       ["아이오닉 6"],
+    "HYU_CASPER":       ["캐스퍼"],
+    "HYU_GRAND_STAREX": ["그랜드 스타렉스"],
+    "HYU_STARIA":       ["스타리아"],
+    "HYU_PORTER":       ["포터"],
+
+    # 기아
+    "KIA_MORNING":      ["모닝"],
+    "KIA_RAY":          ["레이"],
+    "KIA_K3":           ["K3"],
+    "KIA_K5":           ["K5"],
+    "KIA_K7":           ["K7"],
+    "KIA_K8":           ["K8"],
+    "KIA_NIRO":         ["니로"],
+    "KIA_SELTOS":       ["셀토스"],
+    "KIA_SPORTAGE":     ["스포티지"],
+    "KIA_SORENTO":      ["쏘렌토"],
+    "KIA_CARNIVAL":     ["카니발"],
+    "KIA_EV3":          ["EV3"],
+    "KIA_EV6":          ["EV6"],
+    "KIA_BONGO3":       ["봉고 III"],
 }
 
 
-# ── 6. 리콜 원본(한국교통안전공단)에서 실제로 확인한 표기들 ─────────
-# 아래 목록은 "짐작"이 아니라, 2020~2025년 리콜 CSV를 직접 열어서 눈으로 확인한 표기들입니다.
-# model_key 하나에, 그 모델을 가리키는 여러 원본 표기(alias)를 연결해둔 것입니다.
+# ── 6. 리콜 원본에서 실제로 확인한 표기들 ─────────────────────────
+# 2020~2025 리콜 원본에서 직접 확인된 alias만 사용합니다.
 RECALL_ALIASES = {
+    # ── 현대자동차 ──────────────────────────────────────────────
     "HYU_AVANTE": [
-        "아반떼 N", "아반떼 N Line", "아반떼 N(CN7 N)", "아반떼 N-Line(CN7 N-Line)",
-        "아반떼 하이브리드 (CN7 HEV)", "아반떼 하이브리드(CN7 HEV)",
-        "아반떼(AD)", "아반떼(CN7)", "아반떼(HD)",
-        "아반떼N (CN7 KN)", "아반떼N (CN7 N)", "아반떼N (CN7N)",
+        "아반떼 N",
+        "아반떼 N Line",
+        "아반떼 N(CN7 N)",
+        "아반떼 N-Line(CN7 N-Line)",
+        "아반떼 하이브리드 (CN7 HEV)",
+        "아반떼 하이브리드(CN7 HEV)",
+        "아반떼(AD)",
+        "아반떼(CN7)",
+        "아반떼(HD)",
+        "아반떼N (CN7 KN)",
+        "아반떼N (CN7 N)",
+        "아반떼N (CN7N)",
     ],
+
     "HYU_SONATA": [
-        "쏘나타 (DN8)", "쏘나타 플러그인 하이브리드(LF PHEV)",
-        "쏘나타 하이브리드 (LF HEV)", "쏘나타 하이브리드 (YF HEV)",
-        "쏘나타 하이브리드(LF HEV)", "쏘나타 하이브리드(YFE)",
-        "쏘나타(DN8)", "쏘나타(LF)", "쏘나타(YF)", "쏘나타N Line (DN8)",
+        "쏘나타 (DN8)",
+        "쏘나타 플러그인 하이브리드(LF PHEV)",
+        "쏘나타 하이브리드 (LF HEV)",
+        "쏘나타 하이브리드 (YF HEV)",
+        "쏘나타 하이브리드(LF HEV)",
+        "쏘나타 하이브리드(YFE)",
+        "쏘나타(DN8)",
+        "쏘나타(LF)",
+        "쏘나타(YF)",
+        "쏘나타N Line (DN8)",
     ],
+
     "HYU_GRANDEUR": [
-        "그랜저 하이브리드 (GN7 HEV)", "그랜저 하이브리드(IG HEV)",
-        "그랜저(GN7)", "그랜저(HG)", "그랜저(IG)", "그랜저하이브리드(GN7 HEV)",
+        "그랜저 하이브리드 (GN7 HEV)",
+        "그랜저 하이브리드(IG HEV)",
+        "그랜저(GN7)",
+        "그랜저(HG)",
+        "그랜저(IG)",
+        "그랜저하이브리드(GN7 HEV)",
     ],
+
+    "HYU_KONA": [
+        "코나 EV (SX2 EV)",
+        "코나 Electric (OS EV)",
+        "코나 전기차 (OS EV)",
+        "코나(OS PE)",
+        "코나(OS)",
+        "코나(OS) EV",
+        "코나(OS) HEV",
+        "코나(SX2)",
+        "코나N (OS N)",
+        "코나N (OSN)",
+    ],
+
+    "HYU_TUCSON": [
+        "투싼 (TL)",
+        "투싼 수소연료전지(LMFC)",
+        "투싼(LM)",
+        "투싼(NX4)",
+        "투싼(TL)",
+    ],
+
+    "HYU_SANTAFE": [
+        "싼타페 (TM PE)",
+        "싼타페 DM)",
+        "싼타페 하이브리드 (TM PE HEV)",
+        "싼타페 하이브리드(MX5 HEV)",
+        "싼타페 하이브리드(TM HEV)",
+        "싼타페(CM)",
+        "싼타페(DM)",
+        "싼타페(MX5)",
+        "싼타페(TM PE)",
+        "싼타페(TM)",
+    ],
+
+    "HYU_PALISADE": [
+        "더 뉴 팰리세이드",
+        "더 뉴 팰리세이드(LX2 PE)",
+        "팰리세이드 (LX2 PE)",
+        "팰리세이드 하이브리드(LX3 HEV)",
+        "팰리세이드(LX2)",
+        "팰리세이드(LX3)",
+    ],
+
+    "HYU_IONIQ5": [
+        "아이오닉5 (NE)",
+        "아이오닉5 N(NE N)",
+        "아이오닉5(NE)",
+        "아이오닉5(NE1 PE)",
+        "아이오닉5NE",
+    ],
+
+    "HYU_IONIQ6": [
+        "아이오닉6 (CE)",
+        "아이오닉6(CE)",
+    ],
+
+    "HYU_CASPER": [
+        "캐스퍼 일렉트릭 (AX1 EV)",
+        "캐스퍼(AX1)",
+    ],
+
+    "HYU_GRAND_STAREX": [
+        "그랜드 스타렉스(TQ)",
+        "그랜드스타렉스(TQ)",
+    ],
+
+    "HYU_STARIA": [
+        "스타리아 카고 (US4)",
+        "스타리아 하이브리드 (US4 HEV)",
+    ],
+
+    "HYU_PORTER": [
+        "포터2 (HR)",
+        "포터2 EV(HR EV)",
+        "포터2 Electric (HR EV)",
+        "포터2(HR)",
+        "포터II",
+        "포터II EV",
+        "포터II 일렉트릭(HR EV)",
+        "포터II(HR)",
+    ],
+
+    # ── 기아 ───────────────────────────────────────────────────
+    "KIA_MORNING": [
+        "모닝 (JA PE2)",
+        "모닝(JA)",
+    ],
+
+    "KIA_RAY": [
+        "레이 (TAM PE2)",
+        "레이 전기차(TAM EV)",
+        "레이(TAM)",
+        "레이(TAMPE)",
+    ],
+
+    "KIA_K3": [
+        "K3 (BD PE)",
+        "K3(BD)",
+        "K3(YDPE)",
+    ],
+
     "KIA_K5": [
-        "K5 (DL3 PE)", "K5 (DL3)", "K5 하이브리드(TF HEV)",
-        "K5(DL3)", "K5(TF HEV)", "K5(TF)",
+        "K5 (DL3 PE)",
+        "K5 (DL3)",
+        "K5 하이브리드(TF HEV)",
+        "K5(DL3)",
+        "K5(TF HEV)",
+        "K5(TF)",
+        "K5플러그인하이브리드 (JF PHEV)",
+        "K5하이브리드 (JF HEV)",
     ],
+
+    "KIA_K7": [
+        "K7(VG)",
+        "K7(YG)",
+    ],
+
+    "KIA_K8": [
+        "K8 (GL3)",
+    ],
+
+    "KIA_NIRO": [
+        "니로 (SG2 HEV)",
+        "니로 EV (SG2 EV)",
+        "니로 EV(DE EV)",
+        "니로 EV(SG2 EV)",
+        "니로 전기차(DE EV)",
+        "니로 플러그인하이브리드 (DE PHEV)",
+        "니로 플러스(DE PBV)",
+        "니로 하이브리드 (DE HEV)",
+        "니로(DE)",
+        "니로(SG2)",
+        "니로EV (DE EV)",
+        "니로EV(DE EV)",
+        "니로EV(SG2 EV)",
+    ],
+
+    "KIA_SELTOS": [
+        "셀토스 (SP2 PE)",
+        "셀토스 (SP2)",
+        "셀토스(SP2)",
+    ],
+
     "KIA_SPORTAGE": [
-        "스포티지 (NQ5)", "스포티지 (QL)", "스포티지 (QL/QL PE)",
+        "스포티지 (NQ5)",
+        "스포티지 (QL)",
+        "스포티지 (QL/QL PE)",
         "스포티지 하이브리드 (NQ5 HEV)",
-        "스포티지(KM)", "스포티지(NQ5)", "스포티지(QL)", "스포티지(SL)",
+        "스포티지(KM)",
+        "스포티지(NQ5)",
+        "스포티지(QL)",
+        "스포티지(SL)",
     ],
+
     "KIA_SORENTO": [
-        "쏘렌토 (MQ4 PE)", "쏘렌토 (MQ4)", "쏘렌토 (UM/UM PE)",
-        "쏘렌토 하이브리드(MQ4 HEV PE)", "쏘렌토 하이브리드(MQ4 HEV)",
-        "쏘렌토(BL)", "쏘렌토(MQ4)", "쏘렌토(XM)",
-        "쏘렌토R (XM 페이스리프트)", "쏘렌토R(XM페이스리프트)", "올뉴쏘렌토(UM)",
+        "쏘렌토 (MQ4 PE)",
+        "쏘렌토 (MQ4)",
+        "쏘렌토 (UM/UM PE)",
+        "쏘렌토 하이브리드(MQ4 HEV PE)",
+        "쏘렌토 하이브리드(MQ4 HEV)",
+        "쏘렌토(BL)",
+        "쏘렌토(MQ4)",
+        "쏘렌토(XM)",
+        "쏘렌토R (XM 페이스리프트)",
+        "쏘렌토R(XM페이스리프트)",
+        "올뉴쏘렌토(UM)",
+    ],
+
+    "KIA_CARNIVAL": [
+        "그랜드카니발(VQ) 승용",
+        "그랜드카니발(VQ) 승합",
+        "올뉴카니발(YP)",
+        "카니발",
+        "카니발 (KA4)",
+        "카니발 (YP)",
+        "카니발 하이브리드(KA4 HEV)",
+        "카니발(KA4)",
+        "카니발(VQ)",
+        "카니발(YP)",
+    ],
+
+    "KIA_EV3": [
+        "EV3",
+    ],
+
+    "KIA_EV6": [
+        "EV6 (CV)",
+        "EV6(CV)",
+    ],
+
+    "KIA_BONGO3": [
+        "봉고 Ⅲ EV (PU EV)",
+        "봉고Ⅲ (PU)",
+        "봉고Ⅲ EV(PU EV)",
+        "봉고Ⅲ 전기차(PUEV)",
+        "봉고Ⅲ(PU)",
     ],
 }
 
 
 # ── 7. 결함신고 원본에서 실제로 확인한 표기들 ───────────────────────
-# 결함신고 CSV는 리콜 CSV와 또 표기 방식이 달라서(영문 병기 등) 목록을 따로 관리합니다.
+# 현대자동차/기아 제작사 원본값 중 실제 확인된 alias만 사용합니다.
+# 특장업체 제작 차량, 순찰차, 어린이보호차, 캠핑카 등은 자동 포함하지 않습니다.
 DEFECT_ALIASES = {
+    # ── 현대자동차 ──────────────────────────────────────────────
     "HYU_AVANTE": [
-        "뉴아반떼XD(NEW AVANTE XD)", "아반떼 (AVANTE)",
-        "아반떼 Hybrid N Line (AVANTE Hybrid N Line)", "아반떼 Hybrid(AVANTE Hybrid)",
-        "아반떼 N (AVANTE N)", "아반떼 N 라인 (AVANTE N Line)",
-        "아반떼 N 라인(AVANTE N Line)", "아반떼 N(AVANTE N)",
-        "아반떼 스포츠(AVANTE SPORT)", "아반떼 쿠페 (AVANTE COUPE)",
-        "아반떼 하이브리드(AVANTE HYBRID)", "아반떼(AVANTE)",
+        "뉴아반떼XD(NEW AVANTE XD)",
+        "아반떼 (AVANTE)",
+        "아반떼 Hybrid N Line (AVANTE Hybrid N Line)",
+        "아반떼 Hybrid(AVANTE Hybrid)",
+        "아반떼 N (AVANTE N)",
+        "아반떼 N 라인 (AVANTE N Line)",
+        "아반떼 N 라인(AVANTE N Line)",
+        "아반떼 N(AVANTE N)",
+        "아반떼 스포츠(AVANTE SPORT)",
+        "아반떼 쿠페 (AVANTE COUPE)",
+        "아반떼 하이브리드(AVANTE HYBRID)",
+        "아반떼(AVANTE)",
     ],
+
     "HYU_SONATA": [
-        "쏘나타", "쏘나타 (SONATA)", "쏘나타 (SONATA) 하이브리드",
+        "쏘나타",
+        "쏘나타 (SONATA)",
+        "쏘나타 (SONATA) 하이브리드",
         "쏘나타 N 라인 (SONATA N Line)",
-        "쏘나타 하이브리드 (SONATA HYBRID)", "쏘나타 하이브리드 (SONATA Hybrid)",
-        "쏘나타 하이브리드(SONATA HYBRID)", "쏘나타(SONATA)", "쏘나타(SONATA) 하이브리드",
+        "쏘나타 하이브리드 (SONATA HYBRID)",
+        "쏘나타 하이브리드 (SONATA Hybrid)",
+        "쏘나타 하이브리드(SONATA HYBRID)",
+        "쏘나타(SONATA)",
+        "쏘나타(SONATA) 하이브리드",
     ],
+
     "HYU_GRANDEUR": [
-        "그랜저", "그랜저 하이브리드",
-        "그랜저 하이브리드 (GRANDEUR HYBRID)", "그랜저 하이브리드(GRANDEUR HYBRID)",
-        "그랜저(GRANDEUR)", "그랜저(GRANDEUR) 하이브리드",
+        "그랜저 하이브리드",
+        "그랜저 하이브리드 (GRANDEUR HYBRID)",
+        "그랜저 하이브리드(GRANDEUR HYBRID)",
+        "그랜저(GRANDEUR)",
+        "그랜저(GRANDEUR) 하이브리드",
+        "그랜저",
     ],
-    "KIA_K5": ["K5", "K5 하이브리드"],
-    "KIA_SPORTAGE": ["스포티지", "스포티지 하이브리드"],
-    "KIA_SORENTO": ["쏘렌토", "쏘렌토 GL", "쏘렌토 GLS", "쏘렌토 하이브리드"],
+
+    "HYU_KONA": [
+        "코나 N(KONA N)",
+        "코나 일렉트릭 (KONA ELECTRIC)",
+        "코나 일렉트릭(KONA Electric)",
+        "코나 하이브리드(KONA HYBRID)",
+        "코나(KONA)",
+    ],
+
+    "HYU_TUCSON": [
+        "투싼 하이브리드(TUCSON HYBRID)",
+        "투싼(TUCSON)",
+        "투싼(TUCSON) 수소연료전지",
+        "투싼",
+    ],
+
+    "HYU_SANTAFE": [
+        "싼타페",
+        "싼타페 하이브리드(SANTAFE HYBRID)",
+        "싼타페(SANTAFE)",
+    ],
+
+    "HYU_PALISADE": [
+        "팰리세이드",
+        "팰리세이드 하이브리드(PALISADE HYBRID)",
+        "팰리세이드(PALISADE)",
+        "팰리세이드(Palisade)",
+    ],
+
+    "HYU_IONIQ5": [
+        "아이오닉5 (IONIQ5)",
+        "아이오닉5 N(IONIQ5 N)",
+        "아이오닉5(IONIQ5)",
+    ],
+
+    "HYU_IONIQ6": [
+        "아이오닉6 (IONIQ6)",
+    ],
+
+    "HYU_CASPER": [
+        "캐스퍼 일렉트릭(CASPER ELECTRIC)",
+        "캐스퍼 일렉트릭(CASPER Electric)",
+        "캐스퍼(CASPER)",
+    ],
+
+    "HYU_GRAND_STAREX": [
+        "그랜드 스타렉스(GRAND STAREX)",
+        "그랜드스타렉스(GRAND STAREX)",
+    ],
+
+    "HYU_STARIA": [
+        "스타리아 (STARIA)",
+        "스타리아 HYBRID (STARIA HYBRID)",
+        "스타리아 라운지 (STARIA LOUNGE)",
+        "스타리아 라운지 HYBRID (STARIA LOUNGE HYBRID)",
+        "스타리아(US)",
+    ],
+
+    "HYU_PORTER": [
+        "포터Ⅱ (PORTERⅡ)",
+        "포터Ⅱ 일렉트릭 (PORTERⅡ ELECTRIC)",
+        "포터Ⅱ 일렉트릭 내장탑(PORTERⅡ ELECTRIC)",
+        "포터Ⅱ 일렉트릭 윙바디 (PORTERⅡ ELECTRIC)",
+        "포터Ⅱ 일렉트릭 파워게이트 (PORTERⅡ ELECTRIC)",
+        "포터Ⅱ(PORTERⅡ)",
+        "포터Ⅱ내장탑차 (PORTER Ⅱ)",
+        "포터Ⅱ냉동탑차 (PORTER Ⅱ)",
+        "포터Ⅱ냉장탑차 (PORTER Ⅱ)",
+        "포터Ⅱ시티밴 (PORTER Ⅱ)",
+        "포터Ⅱ윙바디 (PORTER Ⅱ)",
+        "포터Ⅱ저상냉동탑차 (PORTER Ⅱ)",
+        "포터Ⅱ전동식윙바디 (PORTER Ⅱ)",
+        "포터Ⅱ트랜스파워게이트 (PORTER Ⅱ)",
+        "포터Ⅱ파워게이트 (PORTER Ⅱ)",
+        "포터Ⅱ하이내장탑차 (PORTER Ⅱ)",
+        "포터Ⅱ하이냉동탑차 (PORTER Ⅱ)",
+        "포터",
+    ],
+
+    # ── 기아 ───────────────────────────────────────────────────
+    "KIA_MORNING": [
+        "모닝",
+    ],
+
+    "KIA_RAY": [
+        "레이",
+        "레이 EV",
+        "레이 전기차",
+    ],
+
+    "KIA_K3": [
+        "K3",
+        "K3 쿱(K3 KOUP)",
+    ],
+
+    "KIA_K5": [
+        "K5",
+        "K5 하이브리드",
+    ],
+
+    "KIA_K7": [
+        "K7",
+        "K7 하이브리드",
+    ],
+
+    "KIA_K8": [
+        "K8",
+        "K8 하이브리드",
+    ],
+
+    "KIA_NIRO": [
+        "니로 EV",
+        "니로 PHEV",
+        "니로 플러스",
+        "니로 하이브리드",
+    ],
+
+    "KIA_SELTOS": [
+        "셀토스",
+    ],
+
+    "KIA_SPORTAGE": [
+        "스포티지",
+        "스포티지 하이브리드",
+    ],
+
+    "KIA_SORENTO": [
+        "쏘렌토",
+        "쏘렌토 GL",
+        "쏘렌토 GLS",
+        "쏘렌토 하이브리드",
+    ],
+
+    "KIA_CARNIVAL": [
+        "그랜드 카니발",
+        "그랜드 카니발 리무진",
+        "그랜드카니발",
+        "그랜드카니발 리무진",
+        "카니발",
+        "카니발 리무진",
+        "카니발 아웃도어",
+        "카니발 하이리무진",
+        "카니발 하이브리드",
+    ],
+
+    "KIA_EV3": [
+        "EV3",
+    ],
+
+    "KIA_EV6": [
+        "EV6",
+        "EV6 GT",
+    ],
+
+    "KIA_BONGO3": [
+        "봉고Ⅲ 1.2톤",
+        "봉고Ⅲ 1.4톤",
+        "봉고Ⅲ 1톤",
+        "봉고Ⅲ 1톤 EV",
+        "봉고Ⅲ 4륜구동",
+        "봉고Ⅲ EV 내장차",
+        "봉고Ⅲ EV 윙바디",
+        "봉고Ⅲ EV 파워게이트",
+        "봉고Ⅲ EV 플러스내장차",
+        "봉고Ⅲ 고급형 내장탑차",
+        "봉고Ⅲ 내장차",
+        "봉고Ⅲ 냉동차",
+        "봉고Ⅲ 미닫이차",
+        "봉고Ⅲ 워크스루밴",
+        "봉고Ⅲ 윙바디",
+        "봉고Ⅲ 일반덤프",
+        "봉고Ⅲ 파워게이트",
+        "봉고Ⅲ 플러스 택배전용차",
+        "봉고Ⅲ 플러스내장차",
+        "봉고Ⅲ 플러스냉동차",
+        "봉고Ⅲ 하이 택배전용차",
+        "봉고Ⅲ 하이내장차",
+    ],
 }
 
 
@@ -141,6 +586,16 @@ DEFECT_ALIASES = {
 # 완전히 삭제하지 않고 "제외"로 표시해서 남겨두는 이유: 나중에 "왜 빠졌지?"를 바로 확인하기 위해서입니다.
 EXCLUDED = {
     ("DEFECT", "아반떼 avante 순찰차"): "특수용도 차량(순찰차)",
+    ("REC", "스타리아 us4 어린이 통학차"): "특수용도 차량(어린이 통학차)",
+
+    ("DEFECT", "그랜드스타렉스어린이버스 grand starex"): "특수용도 차량(어린이버스)",
+    ("DEFECT", "그랜드 스타렉스 어린이보호차 grand starex"): "특수용도 차량(어린이보호차)",
+    ("DEFECT", "그랜드스타렉스어린이보호차 grand starex"): "특수용도 차량(어린이보호차)",
+    ("DEFECT", "유니밴알티 그랜드스타렉스"): "외부 특장업체 차량",
+    ("DEFECT", "스타리아 특수구급차 staria"): "특수용도 차량(구급차)",
+    ("DEFECT", "스타리아 어린이 통학차 staria"): "특수용도 차량(어린이 통학차)",
+    ("DEFECT", "스타리아 어린이 통학차 staria school bus"): "특수용도 차량(어린이 통학차)",
+    ("DEFECT", "스타리아 라운지 캠핑카 staria lounge"): "특수용도 차량(캠핑카)",
 }
 
 
@@ -186,24 +641,64 @@ def normalize_alias(value):
 
 
 # ── 11. 세대코드(트림/모델 코드) 목록 ────────────────────────────
-# 아래 코드 중 하나가 원본 차명 안에 실제로 들어있으면, "참고 정보"로만 저장합니다.
-# (RF-1.3 규칙: 세대코드는 참고용일 뿐, "이게 대표 모델이다"라고 단정하는 데 쓰지 않음)
+# 세대/프로젝트코드는 참고정보로만 저장하며
+# 화면의 대표 세대명으로 단정해서 사용하지 않습니다.
 PROJECT_CODES = [
+    # 현대자동차
     "CN7", "AD", "HD",
     "DN8", "LF", "YF", "YFE",
     "GN7", "IG", "HG",
-    "DL3", "TF",
+    "SX2", "OS", "OSN",
+    "TL", "LMFC", "LM", "NX4",
+    "TM", "MX5", "CM", "DM",
+    "LX2", "LX3",
+    "NE", "NE1",
+    "CE",
+    "AX1",
+    "TQ",
+    "US4",
+    "HR",
+
+    # 기아
+    "JA",
+    "TAM", "TAMPE",
+    "BD", "YDPE",
+    "DL3", "TF", "JF",
+    "VG", "YG",
+    "GL3",
+    "SG2", "DE",
+    "SP2",
     "NQ5", "QL", "KM", "SL",
     "MQ4", "UM", "XM", "BL",
+    "VQ", "YP", "KA4",
+    "CV",
+    "PU", "PUEV",
 ]
 
 
 def extract_generation_name(alias):
-    """원본 차명 문자열 안에서 세대코드(예: CN7)를 찾아 돌려줍니다.
-    여러 개가 동시에 들어있으면(예: "UM/UM PE") "/"로 이어붙여 보여줍니다."""
+    """
+    원본 차명 문자열에서 세대/프로젝트코드를 찾아 참고정보로 반환합니다.
+
+    예:
+    아이오닉5(NE1 PE) → NE1
+    코나N(OSN) → OSN
+
+    NE1 안에서 NE까지 중복 검출되는 것을 막기 위해
+    영문/숫자 경계를 기준으로 정확히 찾습니다.
+    """
     upper = str(alias).upper()
-    found = [code for code in PROJECT_CODES if code in upper]
-    return "/".join(dict.fromkeys(found))  # dict.fromkeys → 순서는 유지하면서 중복만 제거하는 트릭
+
+    found = []
+
+    for code in PROJECT_CODES:
+        pattern = rf"(?<![A-Z0-9]){re.escape(code)}(?![A-Z0-9])"
+
+        if re.search(pattern, upper):
+            found.append(code)
+
+    return "/".join(dict.fromkeys(found))
+
 
 
 # ── 12. 위의 목록들을 실제 표(CSV 행)로 변환 ─────────────────────
@@ -356,32 +851,62 @@ def read_source_csv(path):
     except UnicodeDecodeError:
         return pd.read_csv(path, encoding="utf-8-sig")
 
-# ── 18. 우리 서비스 대상 6개 모델 후보인지 확인 ──────────────────
-def looks_like_target_model(model_name):
+# ── 18. 서비스 지원 모델 후보인지 확인 ───────────────────────────
+def looks_like_target_model(model_name, source_type):
     """
-    원본 전체에서
-    아반떼 / 쏘나타 / 그랜저 / K5 / 스포티지 / 쏘렌토
-    후보만 골라내는 함수입니다.
+    원본 차명이 현재 서비스 지원 모델 계열의 후보인지 확인합니다.
 
-    실제 model_key 확정은 match_model()에서 합니다.
+    MODEL_MASTER의 표준 모델명을 기준으로 후보를 찾고,
+    실제 model_key 확정은 match_model()에서 수행합니다.
+
+    따라서 아직 D-MAP에 등록되지 않은 새 alias도
+    후보로 잡혀 검증 결과에 나타날 수 있습니다.
     """
+    source_type = str(source_type).strip().upper()
+
+    if source_type not in {"DEFECT", "REC"}:
+        raise ValueError(
+            "looks_like_target_model()은 DEFECT / REC만 가능합니다."
+        )
+
     name = normalize_alias(model_name)
 
-    if any(
-        keyword in name
-        for keyword in [
-            "아반떼",
-            "쏘나타",
-            "그랜저",
-            "스포티지",
-            "쏘렌토",
-        ]
-    ):
-        return True
+    for _, (_, model_std) in MODEL_MASTER.items():
+        keyword = normalize_alias(model_std)
 
-    # K5는 다른 차명 안에 우연히 k5가 들어가는 경우를 막기 위해
-    # k5로 시작할 때만 후보로 봅니다.
-    return re.match(r"^k5(?:\s|$)", name) is not None
+        # "아이오닉 5" ↔ "아이오닉5",
+        # "그랜드 스타렉스" ↔ "그랜드스타렉스",
+        # "봉고 III" ↔ "봉고Ⅲ"처럼 공백 차이를 허용
+        parts = keyword.split()
+        body = r"\s*".join(
+            re.escape(part)
+            for part in parts
+        )
+
+        compact_keyword = re.sub(r"\s+", "", keyword)
+
+        # K3/K5/K7/K8/EV3/EV6처럼 영문·숫자로만 된 모델은
+        # SK3 같은 다른 차명의 일부를 잘못 잡지 않도록 양쪽 경계 검사
+        if re.fullmatch(r"[a-z0-9]+", compact_keyword):
+            pattern = (
+                rf"(?<![a-z0-9])"
+                rf"{body}"
+                rf"(?![a-z0-9])"
+            )
+
+        # 한글 모델은 단어 중간에서 시작하는 경우만 차단
+        # → '트레일블레이저' 속 '레이'는 제외
+        # → '포터Ⅱ', '코나N' 같은 실제 파생 표기는 후보로 허용
+        else:
+            pattern = (
+                rf"(?<![가-힣a-z0-9])"
+                rf"{body}"
+            )
+
+        if re.search(pattern, name):
+            return True
+
+    return False
 
 # ── 19. 리콜 원본 매핑 검증 ──────────────────────────────────────
 def validate_recall_file(path):
@@ -421,10 +946,10 @@ def validate_recall_file(path):
         )
     ].copy()
 
-    # ★ 우리 대상 6개 모델 후보만 남김
+    # 현재 서비스 지원 모델 후보만 남김
     df = df[
         df["차명"].apply(
-            looks_like_target_model
+            lambda name: looks_like_target_model(name, "REC")
         )
     ].copy()
 
@@ -498,7 +1023,7 @@ def validate_defect_file(path):
     # ★ 우리 대상 6개 모델 후보만 남김
     df = df[
         df["차명"].apply(
-            looks_like_target_model
+            lambda name: looks_like_target_model(name, "DEFECT")
         )
     ].copy()
 
