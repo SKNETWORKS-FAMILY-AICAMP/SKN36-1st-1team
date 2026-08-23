@@ -49,7 +49,10 @@ CREATE TABLE IF NOT EXISTS model_master (
 -- 2. model_mapping  (D-MAP)
 -- 원천별 차명(alias) → 표준 모델 매핑
 -- manufacturer_std/model_std/manufacturer_support_url은
--- model_master로 정규화되어 이 테이블엔 없음(JOIN으로 조회)
+-- model_master에도 있지만(정규화 기준) model_mapping에도 함께
+-- 저장함(팀 피드백 반영 — 화면/쿼리에서 JOIN 없이 바로 조회 가능하게
+-- 하기 위한 의도적 비정규화). model_key FK는 그대로 유지되며,
+-- 값의 기준(source of truth)은 model_master 쪽임.
 --
 -- model_key는 NOT NULL: '제외'/'검토중'으로 분류된 행(표준 모델에
 -- 매핑되지 않은 alias)은 전처리 단계에서 model_mapping.csv/DB에
@@ -58,14 +61,17 @@ CREATE TABLE IF NOT EXISTS model_master (
 -- 결측이 없음.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS model_mapping (
-    mapping_id          BIGINT       NOT NULL AUTO_INCREMENT,
-    model_key           VARCHAR(50)  NOT NULL,
-    generation_name     VARCHAR(100) NULL,
-    source_type         VARCHAR(20)  NOT NULL,
-    alias_name          VARCHAR(255) NOT NULL,
-    alias_normalized    VARCHAR(255) NOT NULL,
-    match_status        VARCHAR(20)  NOT NULL,
-    review_note         VARCHAR(500) NULL,
+    mapping_id                 BIGINT        NOT NULL AUTO_INCREMENT,
+    model_key                  VARCHAR(50)   NOT NULL,
+    manufacturer_std            VARCHAR(50)   NOT NULL,
+    model_std                   VARCHAR(100)  NOT NULL,
+    generation_name             VARCHAR(100)  NULL,
+    source_type                 VARCHAR(20)   NOT NULL,
+    alias_name                  VARCHAR(255)  NOT NULL,
+    alias_normalized            VARCHAR(255)  NOT NULL,
+    match_status                VARCHAR(20)   NOT NULL,
+    review_note                 VARCHAR(500)  NULL,
+    manufacturer_support_url    VARCHAR(1000) NOT NULL,
 
     PRIMARY KEY (mapping_id),
     UNIQUE KEY uq_model_mapping_source_alias (source_type, alias_name),
@@ -121,7 +127,7 @@ CREATE TABLE IF NOT EXISTS vehicle_sales (
 CREATE TABLE IF NOT EXISTS defect_reports (
     defect_report_id   BIGINT             NOT NULL AUTO_INCREMENT,
     report_date         DATE               NOT NULL,
-    manufacturer        VARCHAR(50)        NULL,
+    manufacturer        VARCHAR(255)       NULL,
     model_original      VARCHAR(255)       NOT NULL,
     model_year          SMALLINT UNSIGNED  NULL,
     model_key           VARCHAR(50)        NOT NULL,
@@ -146,15 +152,15 @@ CREATE TABLE IF NOT EXISTS defect_reports (
 -- (별도 참조 테이블 없이 값으로만 보관 — DB_물리설계 기준)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS recall_campaigns (
-    recall_id            VARCHAR(50)      NOT NULL,
-    manufacturer         VARCHAR(50)      NOT NULL,
+    recall_id            VARCHAR(100)     NOT NULL,
+    manufacturer         VARCHAR(255)     NOT NULL,
     model_original       VARCHAR(255)     NOT NULL,
     model_key            VARCHAR(50)      NOT NULL,
     production_from      DATE             NULL,
     production_to        DATE             NULL,
     recall_start_date    DATE             NOT NULL,
     recall_count         BIGINT UNSIGNED  NULL,
-    recall_reason        TEXT             NULL,
+    recall_reason        TEXT             NOT NULL,
     recall_category      VARCHAR(50)      NOT NULL,
     source_url           VARCHAR(1000)    NOT NULL,
     official_check_url   VARCHAR(1000)    NOT NULL,
@@ -211,8 +217,8 @@ CREATE TABLE IF NOT EXISTS registration_summary (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS faq_master (
     faq_id          VARCHAR(50)   NOT NULL,
-    provider        VARCHAR(50)   NOT NULL,
-    category        VARCHAR(50)   NULL,
+    provider        VARCHAR(100)  NOT NULL,
+    category        VARCHAR(100)  NULL,
     question        TEXT          NOT NULL,
     answer          TEXT          NOT NULL,
     source_url      VARCHAR(1000) NOT NULL,

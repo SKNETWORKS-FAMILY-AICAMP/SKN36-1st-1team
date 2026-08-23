@@ -130,7 +130,7 @@ FILES = {
     "vehicle_sales": ("vehicle_sales.csv", True),
     "defect_reports": ("defect_reports.csv", True),
     "recall": ("recall.csv", True),
-    "faq": ("faq.csv", False),
+    "faq": ("faq_master.csv", True),
 }
 
 # DB에 실제로 데이터를 넣을 때, "어느 테이블에 어떤 컬럼 순서로 넣을지"를 정리한 표입니다.
@@ -139,8 +139,8 @@ FILES = {
 INSERT_SPEC = {
     "model_master": ["model_key", "manufacturer_std", "model_std", "manufacturer_support_url"],
     "model_mapping": [
-        "model_key", "generation_name", "source_type", "alias_name",
-        "alias_normalized", "match_status", "review_note",
+        "model_key", "manufacturer_std", "model_std", "generation_name", "source_type",
+        "alias_name", "alias_normalized", "match_status", "review_note", "manufacturer_support_url",
     ],
     "registration_summary": COLUMNS["registration_summary"],
     "vehicle_sales": [
@@ -319,8 +319,8 @@ def build_db_mapping(mapping_df):
     표준 제조사명/모델명 등은 이제 model_master 테이블에만 저장하므로, 여기서는 제외하고
     "원본 별칭과 매핑 정보"에 해당하는 컬럼들만 남깁니다."""
     cols = [
-        "model_key", "generation_name", "source_type", "alias_name",
-        "alias_normalized", "match_status", "review_note",
+        "model_key", "manufacturer_std", "model_std", "generation_name", "source_type",
+        "alias_name", "alias_normalized", "match_status", "review_note", "manufacturer_support_url",
     ]
     db_df = mapping_df[cols].copy()  # 필요한 컬럼만 복사해서 새 표 생성
 
