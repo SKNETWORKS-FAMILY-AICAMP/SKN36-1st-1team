@@ -5,13 +5,15 @@ preprocess_recall.py
   한국교통안전공단의 "차종별 리콜대수" 누적 CSV에서, 우리 서비스 6개 모델 +
   리콜개시일 2020~2025년 것만 뽑아서 최종 D-REC 파일(data/processed/recall.csv)을 만듭니다.
 
-지켜야 하는 핵심 규칙 (v2.5 문서 기준):
+지켜야 하는 핵심 규칙 (v2.6 문서 기준):
   - D-MAP에서 source_type='REC' 이면서 match_status='검증완료'인 것만 사용
   - 원본 차명/생산기간/개시일/리콜대수/리콜사유는 그대로 보존 (임의로 요약·수정 안 함)
   - recall_category는 사람이 원문을 직접 읽고 확인한 사유만 사용 (키워드로 자동 분류 안 함)
   - source_url(원본 CSV 출처)과 official_check_url(사용자용 재확인 버튼)의 역할을 분리
   - 리콜대수 합계는 "고유 차량 수"가 아님 (같은 차가 여러 캠페인에 겹쳐서 들어갈 수 있음)
   - 판매량/등록대수로 나눈 "리콜률" 같은 지표는 절대 만들지 않음
+  - recall_reason은 필수가 아니라 선택 항목 (원천에 결측이 있을 수 있음).
+    결측이면 임의로 지어내지 않고 "리콜사유 미제공"으로 명시함
 """
 
 from datetime import datetime   # 전처리한 날짜를 loaded_at에 기록하기 위한 도구
@@ -44,6 +46,12 @@ OFFICIAL_CHECK_URL = "https://www.car.go.kr/home/main.do"                # "자�
 
 # ── 4. 원본 CSV에 꼭 있어야 하는 컬럼들 ─────────────────────────────
 REQUIRED_COLUMNS = {"제작자", "차명", "생산기간(부터)", "생산기간(까지)", "리콜개시일", "리콜대수", "리콜사유"}
+
+
+# ── 4-1. 리콜사유가 원천에 없을 때 채워 넣을 표시 문구 ────────────────
+# recall_reason은 데이터정의서 v2.6 기준 "선택" 항목입니다(원천에 결측 존재 확인됨).
+# 결측을 빈 값으로 그냥 두거나 임의로 지어내지 않고, 이 문구로 명시적으로 표시합니다.
+MISSING_RECALL_REASON = "리콜사유 미제공"
 
 
 # ── 5. 문서에서 허용한 recall_category 목록 ─────────────────────────
@@ -106,6 +114,9 @@ def looks_like_target_model(model_name):
 # 이 방식의 핵심: 글자가 하나라도 다른 새로운 사유가 들어오면 지문(해시)이 완전히 달라지므로
 # 절대 자동으로 분류되지 않고, 아래 get_recall_category()에서 에러를 내며 멈춥니다.
 # → 사람이 새 사유를 직접 읽고 이 목록에 추가해줘야만 다음 실행이 통과됩니다.
+#
+# ※ MISSING_RECALL_REASON("리콜사유 미제공")도 하나의 "정해진 사유"로 등록해두어,
+#   결측을 채운 값이 다시 get_recall_category()를 통과할 때 에러가 나지 않게 합니다.
 REVIEWED_REASON_CATEGORY = {
     # 형식: "원문 리콜사유의 SHA-256 해시": "분류",  # 그 사유의 실제 내용(사람이 원문을 읽고 남긴 요약)
     "9f6c6feb09b539749fa313c46e0d0a48cab3488194c9438c0b56664f4b81cfb0": "연료장치",  # 연료펌프 제어유닛 PCB 제조불량
@@ -156,13 +167,16 @@ REVIEWED_REASON_CATEGORY = {
     "22c4dda38109a0b2f496eccbf36664dfe136b1dc6ae44db757cae35ac0011f84": "연료장치",  # 고압 파이프 연료 누유
     "5d1e4eed729127f95a08dd646d445701ff7f829ea7e39ec0051f618a27f00615": "탑승자보호",  # 운전석 에어백 인플레이터
     "9bbcc06c6d2838bdd85c26543d39d24948c53d6dce9c2ea355a60e7b9fed32fc": "연료장치",  # 연료필터 재시정 / 고압펌프 손상
+    "d0889a58c485b5f3820c3a4620c43f905370906c65d18b7ad010d499e60a6e43": "기타",  # MISSING_RECALL_REASON("리콜사유 미제공") 자체의 해시. 원천 결측이라 사유를 알 수 없어 '기타'로 등록
 }
 
 
 # ── 10. 리콜사유 원문으로 recall_category를 찾는 함수 ────────────────
 def get_recall_category(recall_reason):
     """이 사유가 우리가 이미 검토한 사유인지 확인합니다.
-    목록에 없는 새 사유가 나오면, 임의로 '기타'를 넣지 않고 즉시 에러를 내서 멈춥니다."""
+    목록에 없는 새 사유가 나오면, 임의로 '기타'를 넣지 않고 즉시 에러를 내서 멈춥니다.
+    ※ MISSING_RECALL_REASON("리콜사유 미제공")은 recall_reason이 결측이었다는 뜻이므로
+    사유 내용을 알 수 없는 것이 당연하며, 이 경우는 사람이 '기타'로 미리 등록해두었습니다."""
     normalized = normalize_reason_text(recall_reason)
     reason_hash = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
@@ -377,9 +391,14 @@ def preprocess_recall(input_path, mapping_lookup, loaded_at):
     if not maker_mismatch.empty:
         raise ValueError("원본 제작자와 D-MAP 표준 제작사가 충돌합니다.")
 
-    for column in ["manufacturer", "model_original", "recall_reason"]:
+    # manufacturer/model_original은 필수, recall_reason은 원천에서 결측 가능
+    # (v2.6 데이터정의서 기준 선택 항목으로 정정됨)
+    for column in ["manufacturer", "model_original"]:
         if verified_df[column].isna().any():
             raise ValueError(f"필수값 {column}에 결측이 있습니다.")
+
+    # recall_reason 결측은 임의로 지어내지 않고 "리콜사유 미제공"으로 명시
+    verified_df["recall_reason"] = verified_df["recall_reason"].fillna(MISSING_RECALL_REASON)
 
     # 생산 시작일이 종료일보다 늦으면 안 됨 (둘 다 있는 경우에만 비교)
     bad_period = verified_df[
@@ -423,9 +442,10 @@ def validate_result(raw_df, candidate_df, result):
     if len(result) != EXPECTED_CURRENT_ROWS:
         raise ValueError(f"현재 검증 원본 기준 D-REC는 {EXPECTED_CURRENT_ROWS}건입니다. 실제는 {len(result)}건입니다.")
 
+    # recall_reason은 v2.6 기준 선택 항목(결측 시 "리콜사유 미제공"으로 채워짐)이라 필수 목록에서 제외
     required_output = [
         "recall_id", "manufacturer", "model_original", "model_key", "recall_start_date",
-        "recall_reason", "recall_category", "source_url", "official_check_url", "loaded_at",
+        "recall_category", "source_url", "official_check_url", "loaded_at",
     ]
     for column in required_output:
         if result[column].isna().any():
@@ -464,6 +484,7 @@ def validate_result(raw_df, candidate_df, result):
     print(f"production_from 결측: {result['production_from'].isna().sum():,}")
     print(f"production_to 결측  : {result['production_to'].isna().sum():,}")
     print(f"recall_count 결측   : {result['recall_count'].isna().sum():,}")
+    print(f"recall_reason 미제공: {(result['recall_reason'] == MISSING_RECALL_REASON).sum():,}")
 
     print(
         "\n※ recall_count 합계는 캠페인별 대상대수 합계이며 고유 차량 수가 아닙니다."
