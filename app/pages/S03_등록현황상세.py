@@ -1,16 +1,17 @@
 import sys
 from pathlib import Path
 
-# app/pages에서 실행할 때 app/lib 모듈을 찾을 수 있도록 경로를 추가합니다.
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+APP_ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.append(str(PROJECT_ROOT))
+sys.path.append(str(APP_ROOT))
 
 import pandas as pd
 import streamlit as st
 
 # 전국 등록현황 화면에서 사용하는 공통 데이터 로딩/집계/표시 함수입니다.
 from lib.common import (
-    load_national_registration,
-    latest_national_snapshot,
     national_total_count,
     region_summary,
     vehicle_type_summary,
@@ -19,6 +20,8 @@ from lib.common import (
     source_caption,
     static_bar_chart,
 )
+
+from src.db.query_service import get_all_registration
 
 # ------------------------------------------------------------
 # 페이지 기본 설정
@@ -59,7 +62,7 @@ with header_cols[1]:
 
 # D-REG 전국 등록현황 데이터를 불러옵니다.
 # 이 데이터는 특정 모델이 아니라 시장 전체 Stock 데이터입니다.
-national_df = load_national_registration()
+national_df = get_all_registration()
 
 # 데이터 자체를 불러오지 못한 경우 화면 실행을 중단합니다.
 if national_df.empty:

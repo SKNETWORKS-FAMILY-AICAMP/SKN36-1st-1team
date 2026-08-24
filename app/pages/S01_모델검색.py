@@ -1,23 +1,28 @@
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+APP_ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.append(str(PROJECT_ROOT))
+sys.path.append(str(APP_ROOT))
 
 import pandas as pd
 import streamlit as st
 
 from lib.common import (
-    load_national_registration,
-    latest_national_snapshot,
     national_total_count,
     region_summary,
     vehicle_type_summary,
     fuel_summary,
-    model_label,
     fmt_count,
     source_caption,
     static_bar_chart,
-    get_verified_models,
+)
+
+from src.db.query_service import (
+    get_models,
+    get_latest_registration_snapshot,
 )
 
 # 이 페이지가 브라우저 탭에 어떻게 보일지 설정합니다 (제목, 아이콘, 화면 넓게 쓰기)
@@ -58,7 +63,7 @@ st.markdown(
 )
 
 # DB(또는 데이터 소스)에서 "검색 가능한 차종 목록"을 미리 가져옵니다.
-verified_models = get_verified_models()
+verified_models = get_models()
 supported_models_label = " · ".join(verified_models["model_std"].tolist())
 
 # ── 상단 제목 + 홈 버튼 ──────────────────────────────
@@ -103,10 +108,9 @@ if selected_label:
         cand_cols = st.columns([4, 1])
 
         with cand_cols[0]:
-            st.markdown(f"**{selected_row['manufacturer_std']} | {selected_row['model_std']}**")
-            # generation_name(세대/프로젝트코드)이 있을 때만 참고용으로 보여줍니다.
-            if selected_row["generation_name"] and str(selected_row["generation_name"]) != "nan":
-                st.caption(f"참고: {selected_row['generation_name']} (세대/프로젝트코드, 대표 세대 아님)")
+            st.markdown(
+                f"**{selected_row['manufacturer_std']} | {selected_row['model_std']}**"
+            )
 
         with cand_cols[1]:
             # 버튼을 누르면 고른 모델의 키를 기억해 두고(session_state), 상세 페이지로 이동합니다.
@@ -121,8 +125,7 @@ else:
 st.divider()
 
 # ── 전국 자동차 등록현황(시장 전체 통계) 영역 ──────────
-national_df = load_national_registration()
-latest_df = latest_national_snapshot(national_df)
+latest_df = get_latest_registration_snapshot()
 
 if latest_df.empty:
     st.error("전국 자동차 등록현황 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.")
