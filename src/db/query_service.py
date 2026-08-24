@@ -38,24 +38,68 @@ def run_sql(sql, params=None):
 
 
 def get_models():
-    """S01: 서비스에서 지원하는 자동차 모델 목록을 가져옵니다."""
-    # model_master 표에서 모델키/제조사/모델명/고객지원링크를 가나다순으로 가져오라는 질문
-    sql = "SELECT model_key, manufacturer_std, model_std, manufacturer_support_url FROM model_master ORDER BY manufacturer_std, model_std"
+    """S01/S02: 서비스에서 지원하는 자동차 모델 목록을 가져옵니다."""
+    sql = """
+        SELECT
+            model_key,
+            manufacturer_std,
+            model_std,
+            manufacturer_support_url
+        FROM model_master
+        ORDER BY manufacturer_std, model_std
+    """
     return run_sql(sql)
 
 
 def get_sales(model_key):
     """S02: 선택한 모델의 연도별 판매량을 가져옵니다."""
-    # model_key가 일치하는 판매량 기록을 연도 순으로 가져오라는 질문
-    sql = "SELECT sales_year, manufacturer, model_original, domestic_sales_count, verification_status, source_url FROM vehicle_sales WHERE model_key = %s ORDER BY sales_year"
-    return run_sql(sql, [model_key])
+    sql = """
+        SELECT
+            model_key,
+            sales_year,
+            manufacturer,
+            model_original,
+            domestic_sales_count,
+            verification_status,
+            source_url,
+            loaded_at
+        FROM vehicle_sales
+        WHERE model_key = %s
+        ORDER BY sales_year
+    """
+
+    df = run_sql(sql, [model_key])
+
+    if not df.empty:
+        df["loaded_at"] = pd.to_datetime(df["loaded_at"], errors="coerce")
+
+    return df
 
 
 def get_defects(model_key):
     """S02: 선택한 모델의 결함신고 원본 기록을 가져옵니다."""
-    # 최근 신고부터 보이도록 접수일 역순으로 가져오라는 질문
-    sql = "SELECT defect_report_id, report_date, manufacturer, model_original, model_year, source_url FROM defect_reports WHERE model_key = %s ORDER BY report_date DESC"
-    return run_sql(sql, [model_key])
+    sql = """
+        SELECT
+            defect_report_id,
+            model_key,
+            report_date,
+            manufacturer,
+            model_original,
+            model_year,
+            source_url,
+            loaded_at
+        FROM defect_reports
+        WHERE model_key = %s
+        ORDER BY report_date DESC
+    """
+
+    df = run_sql(sql, [model_key])
+
+    if not df.empty:
+        df["report_date"] = pd.to_datetime(df["report_date"], errors="coerce")
+        df["loaded_at"] = pd.to_datetime(df["loaded_at"], errors="coerce")
+
+    return df
 
 
 def get_defect_yearly(model_key):
@@ -67,9 +111,38 @@ def get_defect_yearly(model_key):
 
 def get_recalls(model_key):
     """S02: 선택한 모델의 리콜 캠페인 목록을 가져옵니다."""
-    # 최근 리콜부터 보이도록 리콜개시일 역순으로 가져오라는 질문
-    sql = "SELECT recall_id, manufacturer, model_original, production_from, production_to, recall_start_date, recall_count, recall_reason, recall_category, source_url, official_check_url FROM recall_campaigns WHERE model_key = %s ORDER BY recall_start_date DESC"
-    return run_sql(sql, [model_key])
+    sql = """
+        SELECT
+            recall_id,
+            model_key,
+            manufacturer,
+            model_original,
+            production_from,
+            production_to,
+            recall_start_date,
+            recall_count,
+            recall_reason,
+            recall_category,
+            source_url,
+            official_check_url,
+            loaded_at
+        FROM recall_campaigns
+        WHERE model_key = %s
+        ORDER BY recall_start_date DESC
+    """
+
+    df = run_sql(sql, [model_key])
+
+    if not df.empty:
+        for col in [
+            "production_from",
+            "production_to",
+            "recall_start_date",
+            "loaded_at",
+        ]:
+            df[col] = pd.to_datetime(df[col], errors="coerce")
+
+    return df
 
 
 def get_recall_categories(model_key):

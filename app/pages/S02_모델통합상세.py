@@ -18,13 +18,15 @@ import streamlit as st
 # 모델 비교는 MySQL DB 조회 모듈 사용
 from src.db.model_compare import compare_models
 
+from src.db.query_service import (
+    get_models,
+    get_sales,
+    get_defects,
+    get_recalls,
+)
+
 # 화면 공통 데이터/계산 함수
 from lib.common import (
-    load_vehicle_sales,
-    load_defect_reports,
-    load_recall,
-    get_verified_models,
-    model_label,
     model_sales,
     compute_M04,
     sales_coverage,
@@ -84,7 +86,7 @@ selected_model_key = st.session_state.get("selected_model_key")
 st.title("🚘 모델 통합 상세")
 
 # 현재 서비스에서 지원하는 검증 완료 모델
-verified_models = get_verified_models()
+verified_models = get_models()
 
 # 모델이 선택되지 않았거나 지원하지 않는 모델이면 중단
 if (
@@ -107,10 +109,9 @@ model_row = verified_models[
 ].iloc[0]
 
 # 단일 모델 상세 화면에서 사용하는 processed 데이터
-sales_df = load_vehicle_sales()
-defect_df = load_defect_reports()
-recall_df = load_recall()
-
+sales_df = get_sales(selected_model_key)
+defect_df = get_defects(selected_model_key)
+recall_df = get_recalls(selected_model_key)
 
 # ============================================================
 # 상단 모델 정보
@@ -120,13 +121,7 @@ header_cols = st.columns([5, 1])
 
 with header_cols[0]:
     st.subheader(
-        f"{model_row['manufacturer_std']}  {model_row['model_std']}"
-        + (
-            f" ({model_row['generation_name']})"
-            if model_row["generation_name"]
-            and str(model_row["generation_name"]) != "nan"
-            else ""
-        )
+    f"{model_row['manufacturer_std']}  {model_row['model_std']}"
     )
 
     st.caption(
@@ -594,11 +589,7 @@ other_models = verified_models[
 ]
 
 compare_labels = {
-    model_label(
-        row["manufacturer_std"],
-        row["model_std"],
-        row["generation_name"],
-    ): row["model_key"]
+    f"{row['manufacturer_std']} | {row['model_std']}": row["model_key"]
     for _, row in other_models.iterrows()
 }
 
@@ -634,11 +625,7 @@ if (
             compare_key,
         )
 
-        a_label = model_label(
-            model_row["manufacturer_std"],
-            model_row["model_std"],
-            model_row["generation_name"],
-        )
+        a_label = f"{model_row['manufacturer_std']} | {model_row['model_std']}"
 
         b_label = compare_label
 
