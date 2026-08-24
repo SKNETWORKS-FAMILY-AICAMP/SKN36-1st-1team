@@ -386,8 +386,6 @@ DEFECT_ALIASES = {
         "쏘나타 (SONATA) 하이브리드",
         "쏘나타 N 라인 (SONATA N Line)",
         "쏘나타 하이브리드 (SONATA HYBRID)",
-        "쏘나타 하이브리드 (SONATA Hybrid)",
-        "쏘나타 하이브리드(SONATA HYBRID)",
         "쏘나타(SONATA)",
         "쏘나타(SONATA) 하이브리드",
     ],
@@ -426,7 +424,6 @@ DEFECT_ALIASES = {
         "팰리세이드",
         "팰리세이드 하이브리드(PALISADE HYBRID)",
         "팰리세이드(PALISADE)",
-        "팰리세이드(Palisade)",
     ],
 
     "HYU_IONIQ5": [
@@ -441,7 +438,6 @@ DEFECT_ALIASES = {
 
     "HYU_CASPER": [
         "캐스퍼 일렉트릭(CASPER ELECTRIC)",
-        "캐스퍼 일렉트릭(CASPER Electric)",
         "캐스퍼(CASPER)",
     ],
 
