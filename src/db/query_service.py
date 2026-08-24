@@ -163,6 +163,33 @@ def get_registration(stat_year, dimension_type):
     """
     return run_sql(sql, [stat_year, dimension_type])
 
+def get_all_registration():
+    """S03: DB에 저장된 전국 자동차 등록현황 전체를 가져옵니다."""
+    sql = """
+        SELECT
+            stat_year,
+            stat_month,
+            dimension_type,
+            dimension_value,
+            registration_count,
+            source_url,
+            loaded_at
+        FROM registration_summary
+        ORDER BY stat_year, stat_month, dimension_type, registration_count DESC
+    """
+
+    df = run_sql(sql)
+
+    if df.empty:
+        return df
+
+    month = pd.to_numeric(df["stat_month"], errors="coerce").fillna(0).astype(int)
+    year = pd.to_numeric(df["stat_year"], errors="coerce").astype(int)
+
+    df["_snapshot_key"] = year * 100 + month
+    df["loaded_at"] = pd.to_datetime(df["loaded_at"], errors="coerce")
+
+    return df
 
 def get_registration_years():
     """S03: DB에 등록현황 데이터가 있는 연도 목록을 가져옵니다."""
