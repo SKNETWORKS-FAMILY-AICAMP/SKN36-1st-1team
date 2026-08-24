@@ -3,18 +3,23 @@ import sys
 from pathlib import Path
 
 # app/pages에서 실행할 때 app/lib 모듈을 찾을 수 있도록 경로를 추가합니다.
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+APP_ROOT = Path(__file__).resolve().parents[1]
+
+sys.path.append(str(PROJECT_ROOT))
+sys.path.append(str(APP_ROOT))
 
 import streamlit as st
 
 # FAQ 화면에서 사용하는 공통 데이터/검색/링크 함수입니다.
 from lib.common import (
-    load_faq,
-    search_faq,
-    get_verified_models,
     link_or_gap,
 )
 
+from src.db.query_service import (
+    get_faq,
+    get_models,
+)
 # ------------------------------------------------------------
 # 페이지 기본 설정
 # ------------------------------------------------------------
@@ -58,7 +63,7 @@ selected_model_row = None
 
 # 선택된 model_key가 있으면 현재 서비스 지원 모델 목록에서 해당 모델을 찾습니다.
 if selected_model_key:
-    verified_models = get_verified_models()
+    verified_models = get_models()
 
     match = verified_models[
         verified_models["model_key"] == selected_model_key
@@ -80,8 +85,6 @@ st.divider()
 # FAQ 데이터 로딩
 # ------------------------------------------------------------
 
-# 자동차리콜센터 FAQ 데이터를 불러옵니다.
-faq_df = load_faq()
 
 # ------------------------------------------------------------
 # FAQ 검색
@@ -104,7 +107,7 @@ with search_cols[1]:
 
 # 검색어가 있으면 질문/답변 기준으로 검색하고,
 # 검색어가 없으면 전체 FAQ를 표시합니다.
-results = search_faq(faq_df, keyword) if keyword else faq_df.copy()
+results = get_faq(keyword)
 
 st.divider()
 
