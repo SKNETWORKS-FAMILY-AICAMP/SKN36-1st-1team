@@ -208,23 +208,23 @@ else:
 
             # 연료별 등록대수를 표로도 제공합니다.
             display_fuel_df = fuel_df[
-    ["dimension_value", "registration_count"]
-].rename(
-    columns={
-        "dimension_value": "연료",
-        "registration_count": "등록대수",
-    }
-)
+                ["dimension_value", "registration_count"]
+            ].rename(
+                columns={
+                    "dimension_value": "연료",
+                    "registration_count": "등록대수",
+                }
+            )
 
-display_fuel_df["등록대수"] = display_fuel_df["등록대수"].apply(
-    lambda x: f"{int(x):,}"
-)
+            display_fuel_df["등록대수"] = display_fuel_df["등록대수"].apply(
+                lambda x: f"{int(x):,}"
+            )
 
-st.dataframe(
-    display_fuel_df,
-    hide_index=True,
-    width="stretch",
-)
+            st.dataframe(
+                display_fuel_df,
+                hide_index=True,
+                width="stretch",
+            )
 
 # ------------------------------------------------------------
 # 전국 총 등록대수 시계열
