@@ -62,24 +62,58 @@ st.markdown(
         padding: 0 12px !important;
         box-sizing: border-box !important;
     }
+    /* FAQ 답변 글씨와 원문 확인 버튼 사이 여백 */
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] {
+        margin-top: 12px !important;
+    }
 
     /* FAQ 건수 문구 ↔ 첫 번째 카드 사이 여백 */
     .st-key-faq_list {
         margin-top: 16px !important;
     }
-    /* FAQ 큰 박스끼리 간격
-       ui.py의 전역 [data-testid="stVerticalBlock"] { gap:0!important; }를
-       FAQ 목록 영역에서만 다시 덮어씁니다. */
-    .st-key-faq_list > div[data-testid="stVerticalBlock"],
-    .st-key-faq_list > div > div[data-testid="stVerticalBlock"],
-    .st-key-faq_list [data-testid="stVerticalBlock"]:first-child {
-        gap: 16px !important;
-        row-gap: 16px !important;
+    /* FAQ 큰 박스 내부 여백 */
+    [class*="st-key-faq_card_"] {
+        padding: 20px 28px !important;
+        margin-bottom: 16px !important;
+    }
+    /* FAQ 원문 버튼 왼쪽으로 이동 */
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] {
+        margin-left: -4px !important;
+    }
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] a {
+    min-width: 250px !important;
+    width: auto !important;
+    height: 48px !important;
+
+    padding: 0 18px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 16px !important;
+    white-space: nowrap !important;
+    }
+    /* FAQ 카드 기준점 */
+    [class*="st-key-faq_card_"] {
+        position: relative !important;
+        padding: 20px 24px 20px 24px !important;
+        margin-bottom: 16px !important;
     }
 
-    /* 각 FAQ 카드 wrapper 자체에도 하단 여백을 보조로 적용 */
-    .st-key-faq_list [data-testid="stVerticalBlockBorderWrapper"] {
-        margin-bottom: 16px !important;
+    /* 제공기관 → 카드 오른쪽 하단 */
+    [class*="st-key-faq_card_"] .faq-provider {
+        position: absolute !important;
+        right: 24px !important;
+        bottom: 16px !important;
+
+        font-size: 14px !important;
+        color: #8A9099 !important;
+        white-space: nowrap !important;
+    }
+    /* FAQ 질문(Q) 아래 여백 */
+    [class*="st-key-faq_card_"] [data-testid="stMarkdownContainer"]:first-child {
+        margin-bottom: 10px !important;
     }
     </style>
     """,
@@ -224,15 +258,11 @@ else:
 
     with st.container(key="faq_list"):
 
-        for _, row in results.iterrows():
+        for idx, (_, row) in enumerate(results.iterrows()):
 
-            with st.container(border=True):
+            with st.container(key=f"faq_card_{idx}", border=True):
                 st.markdown(
                     f"**Q. {row['question']}**"
-                )
-
-                st.caption(
-                    f"제공기관 {row['provider']}"
                 )
 
                 st.write(
@@ -242,6 +272,14 @@ else:
                 link_or_gap(
                     row["source_url"],
                     "자동차리콜센터 FAQ 원문에서 확인",
+                )
+                st.markdown(
+                    f"""
+                    <div class="faq-provider">
+                        제공기관 {row['provider']}
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
                 )
     
         st.write("")
