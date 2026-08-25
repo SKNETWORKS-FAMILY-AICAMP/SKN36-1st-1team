@@ -19,7 +19,28 @@ GLOBAL_CSS = r'''
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body,p,div,span,label,button,input,textarea{font-family:"Noto Sans KR",Arial,sans-serif!important}
+body,p,div,label,button,input,textarea{font-family:"Noto Sans KR",Arial,sans-serif!important}
+
+/* Streamlit / BaseWeb 아이콘 폰트 보호
+   전역 span 폰트 강제가 Material Symbols 아이콘을
+   "sortascending", "more_vert" 같은 글자로 노출시키는 문제 방지 */
+span[data-testid="stIconMaterial"],
+.material-symbols-rounded,
+.material-symbols-outlined{
+  font-family:"Material Symbols Rounded","Material Symbols Outlined" !important;
+  font-weight:normal !important;
+  font-style:normal !important;
+  font-size:inherit;
+  line-height:1;
+  letter-spacing:normal;
+  text-transform:none;
+  white-space:nowrap;
+  word-wrap:normal;
+  direction:ltr;
+  font-feature-settings:"liga";
+  -webkit-font-feature-settings:"liga";
+  -webkit-font-smoothing:antialiased;
+}
 [data-testid="stSidebar"],[data-testid="stExpandSidebarButton"],#MainMenu,footer:not(.auto-footer){display:none!important}
 [data-testid="stHeader"]{display:none!important}
 [data-testid="stAppViewContainer"]{background:#f7f9fc}
@@ -462,7 +483,7 @@ def navbar(active="", logo_uri=None):
     logo_html = f'<img src="{logo_uri}" alt="REDLINE">' if logo_uri else '<span style="font-weight:900;color:white;font-size:22px">REDLINE</span>'
     st.markdown(f'''
     <nav class="auto-nav" id="top">
-      <a class="auto-brand" href="/" target="_self" aria-label="REDLINE 홈">{logo_html}</a>
+      <a class="auto-brand" href="/" target="_self" aria-label="AUTO INSIGHT 홈">{logo_html}</a>
       <div class="auto-nav-links">
         <a href="/S01_model_search" target="_self">모델 검색</a>
         <a href="/S03_registration" target="_self">등록현황</a>
