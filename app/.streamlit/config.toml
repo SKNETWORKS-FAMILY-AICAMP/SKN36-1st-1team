@@ -4,7 +4,9 @@
 #  그래서 페이지별 CSS로 배경만 땜질하지 않고, 테마 자체를 여기서 고정해요.)
 [theme]
 base = "light"
-primaryColor = "#2563EB"
+primaryColor = "#C8102E"
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F3F4F6"
 textColor = "#1F2937"
+chartCategoricalColors = ["#C8102E", "#A50E27", "#E2545F", "#EF9AA0", "#8B1220", "#F7B9BE", "#5C0B18", "#FBDADC"]
+chartSequentialColors = ["#FBDADC", "#EF9AA0", "#E2545F", "#C8102E", "#A50E27", "#8B1220", "#5C0B18", "#3B0710"]

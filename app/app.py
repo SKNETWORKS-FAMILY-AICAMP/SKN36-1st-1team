@@ -1,117 +1,261 @@
+import base64
+from pathlib import Path
 
 import streamlit as st
 
+from lib.ui import apply_ui, navbar, site_footer
+
+
 st.set_page_config(
-    page_title="전국 자동차 등록현황 · 모델 안전정보",
+    page_title="CAR SIGNAL",
     page_icon="🚗",
     layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
+apply_ui()
+
+ASSET_DIR = Path(__file__).resolve().parent / "assets"
+
+
+def data_uri(name: str) -> str:
+    path = ASSET_DIR / name
+    raw = base64.b64encode(path.read_bytes()).decode("ascii")
+
+    ext = path.suffix.lower().lstrip(".")
+    mime = "jpeg" if ext in {"jpg", "jpeg"} else ext
+
+    return f"data:image/{mime};base64,{raw}"
+
+
+# =========================================================
+# ASSETS
+# =========================================================
+
+logo_uri = data_uri("logo.png")
+hero_uri = data_uri("hero_full.jpg")
+model_uri = data_uri("service_model.jpg")
+map_uri = data_uri("service_map.jpg")
+faq_uri = data_uri("service_faq.jpg")
+
+
+# =========================================================
+# NAVBAR
+# =========================================================
+
+navbar(logo_uri=logo_uri)
+
+
+# =========================================================
+# HERO IMAGE
+# =========================================================
+
+hero_html = (
+    f'<section class="home-hero">'
+    f'<div class="home-hero-bg" '
+    f'style="background-image:url(&quot;{hero_uri}&quot;)"></div>'
+    f'<div class="home-hero-shade"></div>'
+    f'<div class="home-hero-content">'
+    f'<h1>'
+    f'차를 고르기 전,<br>'
+    f'<span>신호를 확인하세요.</span>'
+    f'</h1>'
+    f'<p>'
+    f'등록현황부터 리콜·결함신고까지, 데이터로 확인하는 현명한 선택'
+    f'</p>'
+    f'</div>'
+    f'</section>'
 )
 
 st.markdown(
-    """
-    <style>
-    [data-testid="stSidebar"] { display: none; }
-    [data-testid="stExpandSidebarButton"] { display: none; }
-
-    .block-container, [data-testid="stAppViewBlockContainer"] {
-      padding-top: 3rem !important;
-      padding-bottom: 2rem !important;
-      max-width: 1200px !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-    }
-    [data-testid="stVerticalBlock"] { gap: 0.6rem; }
-
-    .s00-eyebrow {
-      text-align: center; color: #1C59D9; font-weight: 600; font-size: 14px;
-      letter-spacing: 0.04em; margin: 0 0 6px 0;
-    }
-    .s00-hero-title {
-      text-align: center; color: #121726; font-weight: 800; font-size: 2.7rem;
-      line-height: 1.3 !important; max-width: 760px !important;
-      margin: 0 auto 14px auto !important; padding-top: 2px;
-    }
-    .s00-hero-sub {
-      text-align: center; color: #4B5563; font-size: 1.05rem; line-height: 1.6;
-      max-width: 640px !important; margin: 0 auto !important;
-    }
-    div[data-testid="stButton"] button[kind="primary"] {
-      border-radius: 12px; padding-top: 0.75rem; padding-bottom: 0.75rem; font-size: 1.05rem;
-    }
-
-    .s00-card-link {
-      display: block !important; text-decoration: none !important; color: inherit !important;
-      cursor: pointer; border: 1px solid #E5E8ED; border-radius: 16px; padding: 24px;
-      transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
-    }
-    .s00-card-link:hover {
-      box-shadow: 0 8px 20px rgba(17,24,39,0.08); transform: translateY(-2px); border-color: #C7D2E5;
-    }
-    .s00-card-icon { display: block !important; font-size: 30px; margin-bottom: 6px; text-decoration: none !important; }
-    .s00-card-title {
-      display: block !important; font-weight: 700; font-size: 1.05rem;
-      color: #121726 !important; margin-bottom: 6px; text-decoration: none !important;
-    }
-    .s00-card-desc {
-      display: block !important; color: #4B5563 !important; font-size: 0.9rem;
-      line-height: 1.55; text-decoration: none !important;
-    }
-
-    .s00-footer { text-align: center; color: #8C949E; font-size: 13px; margin-top: 4px; }
-    </style>
-    """,
+    hero_html,
     unsafe_allow_html=True,
 )
 
-st.markdown('<p class="s00-eyebrow">전국 자동차 등록현황 · 모델 안전정보 통합 조회</p>', unsafe_allow_html=True)
-st.markdown(
-    '<h1 class="s00-hero-title">관심 모델의 판매·결함신고·리콜 정보를<br>한 번에 확인하세요</h1>',
-    unsafe_allow_html=True,
+# =========================================================
+# HERO INFO RIBBON
+# =========================================================
+
+hero_info_html = (
+    f'<div class="hero-info-ribbon">'
+
+    # 신뢰할 수 있는 데이터
+    f'<div class="hero-info-item">'
+    f'<div class="hero-info-icon">◇</div>'
+    f'<div>'
+    f'<b>신뢰할 수 있는 데이터</b>'
+    f'<span>공공데이터 기반 정확한 정보</span>'
+    f'</div>'
+    f'</div>'
+
+    # 통합 정보
+    f'<div class="hero-info-item">'
+    f'<div class="hero-info-icon">▥</div>'
+    f'<div>'
+    f'<b>한눈에 보는 통합 정보</b>'
+    f'<span>등록현황, 리콜, 결함신고 통합 제공</span>'
+    f'</div>'
+    f'</div>'
+
+    # 전국 현황
+    f'<div class="hero-info-item">'
+    f'<div class="hero-info-icon">◎</div>'
+    f'<div>'
+    f'<b>전국 단위 현황</b>'
+    f'<span>지역별·연도별 상세 통계 제공</span>'
+    f'</div>'
+    f'</div>'
+
+    # 공식 출처
+    f'<div class="hero-info-item">'
+    f'<div class="hero-info-icon">ⓘ</div>'
+    f'<div>'
+    f'<b>공식 출처 기반</b>'
+    f'<span>국토교통부, 교통안전공단 등</span>'
+    f'</div>'
+    f'</div>'
+
+    f'</div>'
 )
-st.markdown(
-    '<p class="s00-hero-sub">차량 모델을 검색하면 국내 판매량, 소비자 결함신고, 공식 리콜 정보를 '
-    '한 곳에서 확인할 수 있어요. 전국 자동차 등록현황도 함께 살펴보세요.</p>',
-    unsafe_allow_html=True,
-)
-
-st.write("")
-cta_cols = st.columns([1, 1.1, 1])
-with cta_cols[1]:
-    if st.button("🔎 모델 검색 시작하기 →", use_container_width=True, type="primary"):
-        st.switch_page("pages/S01_모델검색.py")
-
-st.write("")
-st.write("")
-
-FEATURES = [
-    ("📊", "전국 등록현황", "지역·차종·연료별 전국 자동차 등록현황(시장 전체 규모)을 한눈에 확인해요.", "/S03_등록현황상세"),
-    ("💬", "리콜 FAQ / 공식 안내", "자동차리콜센터가 공개한 공통 FAQ와 공식 확인 링크를 제공해요.", "/S04_FAQ"),
-]
-
-_gutter, _card = 1, 2
-feat_cols = st.columns([_gutter] + [_card] * len(FEATURES) + [_gutter])[1:-1]
-for col, (icon, title, desc, target_url) in zip(feat_cols, FEATURES):
-    with col:
-        st.markdown(
-            f'<a href="{target_url}" target="_self" class="s00-card-link">'
-            f'<span class="s00-card-icon">{icon}</span>'
-            f'<span class="s00-card-title">{title}</span>'
-            f'<span class="s00-card-desc">{desc}</span>'
-            f'</a>',
-            unsafe_allow_html=True,
-        )
-
-st.write("")
-
-st.info(
-    "지원 범위 안내 — 검증완료된 현대·기아 지원 모델만 조회할 수 있어요. "
-    "검토중/제외 상태인 모델은 통합 화면으로 연결되지 않아요.",
-    icon="ℹ️",
-)
-
-st.write("")
 
 st.markdown(
-    '<p class="s00-footer">출처: 국토교통부 통계누리 · 공공데이터포털(data.go.kr) · 자동차리콜센터</p>',
+    hero_info_html,
     unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# SERVICE + DATA NOTICE
+# =========================================================
+
+service_html = (
+    f'<section id="service" class="home-section">'
+
+    # 제목
+    f'<h2>주요 서비스</h2>'
+    f'<div class="section-underline"></div>'
+
+    # 카드 영역
+    f'<div class="service-grid">'
+
+    # -----------------------------------------------------
+    # 모델 검색
+    # -----------------------------------------------------
+    f'<a class="service-card" '
+    f'href="/S01_model_search" '
+    f'target="_self">'
+
+    f'<div class="service-copy">'
+    f'<span>모델 검색</span>'
+    f'<p>'
+    f'선택한 모델의 판매량, 리콜, 결함신고,<br>'
+    f'공식 리콜 정보를 한 화면에서 확인할 수 있습니다.'
+    f'</p>'
+    f'<b>모델 검색 바로가기 &nbsp;→</b>'
+    f'</div>'
+
+    f'<div class="service-image model" '
+    f'style="background-image:url(&quot;{model_uri}&quot;)">'
+    f'</div>'
+
+    f'</a>'
+
+    # -----------------------------------------------------
+    # 전국 등록현황
+    # -----------------------------------------------------
+    f'<a class="service-card" '
+    f'href="/S03_registration" '
+    f'target="_self">'
+
+    f'<div class="service-copy">'
+    f'<span>전국 등록현황</span>'
+    f'<p>'
+    f'연도별, 지역별, 차종별 등록대수를<br>'
+    f'다양한 차트와 표로 확인할 수 있습니다.'
+    f'</p>'
+    f'<b>등록현황 바로가기 &nbsp;→</b>'
+    f'</div>'
+
+    f'<div class="service-image map" '
+    f'style="background-image:url(&quot;{map_uri}&quot;)">'
+    f'</div>'
+
+    f'</a>'
+
+    # -----------------------------------------------------
+    # FAQ
+    # -----------------------------------------------------
+    f'<a class="service-card" '
+    f'href="/S04_FAQ" '
+    f'target="_self">'
+
+    f'<div class="service-copy">'
+    f'<span>FAQ / 공식 안내</span>'
+    f'<p>'
+    f'리콜 절차, 데이터 출처 등<br>'
+    f'궁금한 내용을 빠르게 찾아보세요.'
+    f'</p>'
+    f'<b>FAQ 바로가기 &nbsp;→</b>'
+    f'</div>'
+
+    f'<div class="service-image faq" '
+    f'style="background-image:url(&quot;{faq_uri}&quot;)">'
+    f'</div>'
+
+    f'</a>'
+
+    # service-grid 종료
+    f'</div>'
+
+    # =====================================================
+    # DATA NOTICE
+    # =====================================================
+
+    f'<section id="data-guide" class="data-notice">'
+
+    f'<div class="notice-icon">!</div>'
+
+    f'<div class="notice-body">'
+
+    f'<h3>데이터 이용 시 주의사항</h3>'
+
+    f'<div class="notice-items">'
+
+    f'<span>'
+    f'• 2023년 결함신고 데이터는 미확보 상태입니다.'
+    f'</span>'
+
+    f'<span>'
+    f'• 판매량 공란은 0이 아니며, 미제공된 값입니다.'
+    f'</span>'
+
+    f'<span>'
+    f'• 리콜 대상대수는 여러 캠페인에서 중복될 수 있습니다.'
+    f'</span>'
+
+    f'<span>'
+    f'• 판매량·결함신고·리콜 대상대수·전국 등록대수는 '
+    f'기준이 달라 직접 비율로 계산하지 않습니다.'
+    f'</span>'
+
+    f'</div>'  # notice-items
+    f'</div>'  # notice-body
+
+    f'</section>'  # data-notice
+
+    f'</section>'  # home-section
+)
+
+st.markdown(
+    service_html,
+    unsafe_allow_html=True,
+)
+
+
+# =========================================================
+# FOOTER
+# =========================================================
+
+site_footer(
+    logo_uri=logo_uri
 )

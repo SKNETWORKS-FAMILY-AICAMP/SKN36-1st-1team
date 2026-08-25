@@ -2,6 +2,7 @@
 import sys
 from pathlib import Path
 
+
 # app/pages에서 실행할 때 app/lib 모듈을 찾을 수 있도록 경로를 추가합니다.
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 APP_ROOT = Path(__file__).resolve().parents[1]
@@ -11,7 +12,8 @@ sys.path.append(str(APP_ROOT))
 
 import streamlit as st
 
-# FAQ 화면에서 사용하는 공통 데이터/검색/링크 함수입니다.
+from lib.ui import apply_ui, navbar, page_intro, site_footer
+
 from lib.common import (
     link_or_gap,
 )
@@ -20,36 +22,92 @@ from src.db.query_service import (
     get_faq,
     get_models,
 )
+
+
 # ------------------------------------------------------------
 # 페이지 기본 설정
 # ------------------------------------------------------------
 
-st.set_page_config(page_title="리콜 FAQ / 공식 안내", page_icon="💬", layout="wide")
 
-# Streamlit 기본 사이드바를 숨깁니다.
+st.set_page_config(
+    page_title="리콜 FAQ / 공식 안내",
+    page_icon="💬",
+    layout="wide",
+)
+
+apply_ui()
+navbar("FAQ")
+
 st.markdown(
     """
     <style>
     [data-testid="stSidebar"] { display: none; }
     [data-testid="stExpandSidebarButton"] { display: none; }
+
+    .st-key-faq_search_row {
+        margin-top: 12px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .st-key-faq_search_row [data-testid="stTextInput"] div[data-baseweb="input"] {
+        height: 48px !important;
+        min-height: 48px !important;
+        max-height: 48px !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-faq_search_row [data-testid="stButton"] button {
+        height: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
+        width: 100% !important;
+    }
+
+    .st-key-faq_list {
+        margin-top: 16px !important;
+    }
+
+    [class*="st-key-faq_card_"] {
+        position: relative !important;
+        padding: 20px 24px !important;
+        margin-bottom: 16px !important;
+    }
+
+    [class*="st-key-faq_card_"] .faq-provider {
+        position: absolute !important;
+        right: 24px !important;
+        bottom: 8px !important;
+        font-size: 14px !important;
+        color: #8A9099 !important;
+        white-space: nowrap !important;
+    }
+
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] a {
+        min-width: 250px !important;
+        width: auto !important;
+        height: 48px !important;
+        padding: 0 18px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 16px !important;
+        white-space: nowrap !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
+
 # ------------------------------------------------------------
 # 상단 제목 / Home 버튼
 # ------------------------------------------------------------
 
-header_cols = st.columns([5, 1])
-
-with header_cols[0]:
-    st.title("💬 리콜 FAQ / 공식 안내")
-
-with header_cols[1]:
-    st.write("")
-    if st.button("🏠 Home"):
-        st.switch_page("app.py")
+page_intro(
+    "리콜 FAQ / 공식 안내",
+    "리콜·결함조사·보상 관련 자주 묻는 질문과 공식 확인 경로를 제공합니다.",
+    "OFFICIAL GUIDE",
+)
 
 # ------------------------------------------------------------
 # 이전 화면에서 선택한 모델 정보 확인
@@ -90,20 +148,25 @@ st.divider()
 # FAQ 검색
 # ------------------------------------------------------------
 
-search_cols = st.columns([5, 1])
-
-with search_cols[0]:
-    keyword = st.text_input(
-        "검색어",
-        placeholder="리콜 / 보상 / 결함조사 등",
-        label_visibility="collapsed",
+with st.container(key="faq_search_row"):
+    search_cols = st.columns(
+        [5.6, 1],
+        gap="small",
+        vertical_alignment="center",
     )
 
-with search_cols[1]:
-    st.button(
-        "검색",
-        use_container_width=True,
-    )
+    with search_cols[0]:
+        keyword = st.text_input(
+            "검색어",
+            placeholder="리콜 / 보상 / 결함조사 등",
+            label_visibility="collapsed",
+        )
+
+    with search_cols[1]:
+        st.button(
+            "검색",
+            use_container_width=True,
+        )
 
 # 검색어가 있으면 질문/답변 기준으로 검색하고,
 # 검색어가 없으면 전체 FAQ를 표시합니다.
@@ -141,25 +204,35 @@ else:
         )
 
     # FAQ 한 건씩 카드 형태로 표시합니다.
-    for _, row in results.iterrows():
-        with st.container(border=True):
-            st.markdown(
-                f"**Q. {row['question']}**"
-            )
+    with st.container(key="faq_list"):
 
-            st.caption(
-                f"제공기관 {row['provider']}"
-            )
+        for idx, (_, row) in enumerate(results.iterrows()):
 
-            st.write(
-                f"A. {row['answer']}"
-            )
+            with st.container(
+                key=f"faq_card_{idx}",
+                border=True,
+            ):
+                st.markdown(
+                    f"**Q. {row['question']}**"
+                )
 
-            # 각 FAQ의 공식 원문 URL이 있으면 이동 버튼을 제공합니다.
-            link_or_gap(
-                row["source_url"],
-                "자동차리콜센터 FAQ 원문에서 확인",
-            )
+                st.write(
+                    f"A. {row['answer']}"
+                )
+
+                link_or_gap(
+                    row["source_url"],
+                    "자동차리콜센터 FAQ 원문에서 확인",
+                )
+
+                st.markdown(
+                    f"""
+                    <div class="faq-provider">
+                        제공기관 {row['provider']}
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
     st.write("")
 
@@ -210,3 +283,10 @@ with link_cols[1]:
             st.caption(
                 "제조사 공식 고객지원 링크를 확인할 수 없습니다. (ST-10)"
             )
+
+st.markdown(
+    "<div style='height: 30px;'></div>",
+    unsafe_allow_html=True,
+)
+
+site_footer()
