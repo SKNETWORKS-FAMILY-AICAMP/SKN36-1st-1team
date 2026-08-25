@@ -137,8 +137,9 @@ def preprocess_faq():
     # 원본 answer 값을 최종 answer 컬럼에 넣습니다.
     # 마찬가지로 앞뒤 공백을 제거합니다.
     result["answer"] = (
-        df["answer"]
-        .str.strip()
+    df["answer"]
+    .str.replace(r"\s*ㅇ\s+", "\n○ ", regex=True)
+    .str.strip()
     )
 
     # FAQ 원본 페이지 주소를 저장합니다.
