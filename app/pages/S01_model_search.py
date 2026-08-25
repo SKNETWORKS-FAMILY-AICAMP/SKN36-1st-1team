@@ -367,22 +367,29 @@ with st.container(key="model_search_caption"):
 if selected_label:
     key = options[selected_label]
     row = verified_models[verified_models.model_key == key].iloc[0]
-
-    st.markdown(
-        f"""
-        <div class="ai-notice"
-            style="background:#FDEEEE;border-color:#F0C4C4">
-            <span class="ai-badge">선택 후보</span>
-            <p>
-                <strong style="font-size:17px">
-                    {row["manufacturer_std"]}  |  {row["model_std"]}
-                </strong><br>
-                model_key 기반 통합 조회
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    generation = row.get("generation_name")
+    generation_note = (
+        f'<span style="color:#6B7280">참고: {generation}</span><br>'
+        if pd.notna(generation) and str(generation).strip()
+        else ""
     )
+
+    candidate_html = (
+        '<div class="ai-notice" style="background:#FDEEEE;border-color:#F0C4C4">'
+        '<span class="ai-badge">선택 후보</span>'
+        '<div style="margin-top:14px;">'
+        f'<div style="font-size:17px;font-weight:800;color:#3F3F46;">'
+        f'{row["manufacturer_std"]}  |  {row["model_std"]}'
+        '</div>'
+        f'{generation_note}'
+        '<div style="margin-top:8px;color:#374151;font-size:14px;">'
+        'model_key 기반 통합 조회'
+        '</div>'
+        '</div>'
+        '</div>'
+    )
+
+    st.markdown(candidate_html, unsafe_allow_html=True)
 
     if go_detail:
         st.session_state["selected_model_key"] = key

@@ -7,7 +7,7 @@ from lib.ui import apply_ui, navbar, site_footer
 
 
 st.set_page_config(
-    page_title="CAR SIGNAL",
+    page_title="REDLINE",
     page_icon="🚗",
     layout="wide",
     initial_sidebar_state="collapsed",

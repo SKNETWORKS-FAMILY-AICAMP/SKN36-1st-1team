@@ -1136,6 +1136,13 @@ else:
     )
 
     # 표
+    # 판매량은 천 단위 쉼표로 표시하고, 출처 URL은 클릭 가능한 링크로 제공합니다.
+    display_m05["판매량"] = pd.to_numeric(
+        display_m05["판매량"],
+        errors="coerce",
+    )
+    display_m05["출처"] = display_m05["출처"].fillna("").astype(str)
+
     with st.container(key="sales_table_wrap"):
         st.dataframe(
             display_m05[
@@ -1143,6 +1150,21 @@ else:
             ],
             use_container_width=True,
             hide_index=True,
+            column_config={
+                "연도": st.column_config.NumberColumn(
+                    "연도",
+                    format="%d",
+                ),
+                "판매량": st.column_config.NumberColumn(
+                    "판매량",
+                    format="%,d",
+                ),
+                "출처": st.column_config.LinkColumn(
+                    "출처",
+                    display_text="원문 보기 ↗",
+                    width="large",
+                ),
+            },
         )
 
 
@@ -1651,7 +1673,7 @@ def _compare_grouped_bar(df, x_col, value_cols, height=260):
                     labelFontSize=11,
                     tickSize=0,
                     domain=False,
-                    format=",",
+                    format=",.0f",
                 ),
             ),
             color=alt.Color(
@@ -1670,7 +1692,7 @@ def _compare_grouped_bar(df, x_col, value_cols, height=260):
             tooltip=[
                 alt.Tooltip(f"{x_col}:N", title=x_col),
                 alt.Tooltip("모델:N", title="모델"),
-                alt.Tooltip("값:Q", title="값", format=","),
+                alt.Tooltip("값:Q", title="값", format=",.0f"),
             ],
         )
         .properties(
@@ -1724,7 +1746,7 @@ def _compare_line_chart(df, x_col, value_cols, height=260):
                 labelFontSize=11,
                 tickSize=0,
                 domain=False,
-                format=",",
+                format=",.0f",
             ),
         ),
         color=alt.Color(
@@ -1743,7 +1765,7 @@ def _compare_line_chart(df, x_col, value_cols, height=260):
         tooltip=[
             alt.Tooltip(f"{x_col}:N", title=x_col),
             alt.Tooltip("모델:N", title="모델"),
-            alt.Tooltip("값:Q", title="신고건수", format=","),
+            alt.Tooltip("값:Q", title="신고건수", format=",.0f"),
         ],
     )
 
