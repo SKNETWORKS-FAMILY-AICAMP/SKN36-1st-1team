@@ -64,7 +64,7 @@ st.markdown(
     }
     /* FAQ 답변 글씨와 원문 확인 버튼 사이 여백 */
     [class*="st-key-faq_card_"] [data-testid="stLinkButton"] {
-        margin-top: 12px !important;
+        margin-top: 4px !important;
     }
 
     /* FAQ 건수 문구 ↔ 첫 번째 카드 사이 여백 */
@@ -105,15 +105,14 @@ st.markdown(
     [class*="st-key-faq_card_"] .faq-provider {
         position: absolute !important;
         right: 24px !important;
-        bottom: 16px !important;
-
+        bottom: 8px !important;
         font-size: 14px !important;
         color: #8A9099 !important;
         white-space: nowrap !important;
     }
     /* FAQ 질문(Q) 아래 여백 */
     [class*="st-key-faq_card_"] [data-testid="stMarkdownContainer"]:first-child {
-        margin-bottom: 10px !important;
+        margin-bottom: 2px !important;
     }
     </style>
     """,
@@ -336,4 +335,10 @@ with link_cols[1]:
             st.caption(
                 "제조사 공식 고객지원 링크를 확인할 수 없습니다. (ST-10)"
             )
+# 버튼 영역과 푸터 사이 여백
+st.markdown(
+    "<div style='height: 30px;'></div>",
+    unsafe_allow_html=True,
+)
+
 site_footer()

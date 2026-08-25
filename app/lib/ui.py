@@ -459,7 +459,7 @@ def apply_ui():
 
 def navbar(active="", logo_uri=None):
     logo_uri = logo_uri or _default_logo_uri()
-    logo_html = f'<img src="{logo_uri}" alt="CAR SIGNAL">' if logo_uri else '<span style="font-weight:900;color:white;font-size:22px">CAR SIGNAL</span>'
+    logo_html = f'<img src="{logo_uri}" alt="REDLINE">' if logo_uri else '<span style="font-weight:900;color:white;font-size:22px">REDLINE</span>'
     st.markdown(f'''
     <nav class="auto-nav" id="top">
       <a class="auto-brand" href="/" target="_self" aria-label="AUTO INSIGHT 홈">{logo_html}</a>
@@ -481,14 +481,14 @@ def section_header(title, subtitle="", label="INSIGHT"):
 
 def site_footer(logo_uri=None):
     logo_uri = logo_uri or _default_logo_uri()
-    logo_html = f'<img src="{logo_uri}" alt="CAR SIGNAL">' if logo_uri else '<strong>CAR SIGNAL</strong>'
+    logo_html = f'<img src="{logo_uri}" alt="REDLINE">' if logo_uri else '<strong>REDLINE</strong>'
     st.markdown(f'''
     <footer class="auto-footer">
       <a class="footer-logo" href="/" target="_self">{logo_html}</a>
       <div class="footer-col"><b>데이터 출처</b><span>국토교통부 &nbsp; | &nbsp; 한국교통안전공단</span></div>
       <div class="footer-col"><b>서비스 정보</b><span>이용약관 &nbsp; | &nbsp; 개인정보처리방침</span></div>
       <div class="footer-col"><b>문의</b><span>auto.insight@kotsa.or.kr</span></div>
-      <div class="footer-copy">© 2026 AUTO INSIGHT. All rights reserved.</div>
+      <div class="footer-copy">© 2026 REDLINE. All rights reserved.</div>
       <a class="footer-top" href="#top">↑</a>
     </footer>
     ''', unsafe_allow_html=True)
