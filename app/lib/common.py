@@ -48,7 +48,12 @@ FAQ_PATH = PROCESSED_DIR / "faq_master.csv"                            # D-FAQ (
 # 2020~2025만 분석하고, 이보다 이전/이후 원본은 있어도 화면 계산에 넣지 않아요.
 ANALYSIS_YEAR_START = 2020
 ANALYSIS_YEAR_END = 2025
-DEFECT_MISSING_YEARS = {2023}  # 2023 원천파일 미확보 (0건이 아니라 "데이터 미확보")
+# 결함신고 원천 확보 정책
+# 데이터정의서/요구사항 기준으로 2020~2022, 2024~2025는 확보,
+# 2023은 원천 미확보입니다. '원천 미확보'와 '확보했지만 0건'을 구분하기 위해
+# 파일 내 행 존재 여부로 추론하지 않고 정책값으로 명시합니다.
+DEFECT_AVAILABLE_YEARS = frozenset({2020, 2021, 2022, 2024, 2025})
+DEFECT_MISSING_YEARS = frozenset({2023})
 
 
 # ------------------------------------------------------------
@@ -234,22 +239,33 @@ def model_defects(defect_df: pd.DataFrame, model_key: str) -> pd.DataFrame:
     return defect_df[defect_df["model_key"] == model_key].copy()
 
 
+def defect_available_years(defect_df: pd.DataFrame) -> set[int]:
+    """D-DEF 원천 확보 연도를 문서 확정 정책에 따라 반환합니다.
+
+    2023은 신고 0건이 아니라 원천 미확보이므로 실제 CSV 행 유무로
+    확보 여부를 판정하지 않습니다.
+    """
+    return set(DEFECT_AVAILABLE_YEARS)
+
+
 def compute_M06(defect_df: pd.DataFrame, model_key: str) -> int:
-    """M06: 확보된 접수연도(2020~2022, 2024~2025)의 결함신고 레코드 수. 2023 제외."""
+    """M06: 원천이 실제 확보된 분석연도의 결함신고 레코드 수."""
     sub = model_defects(defect_df, model_key)
     years = sub["report_date"].dt.year
-    mask = years.notna() & ~years.isin(DEFECT_MISSING_YEARS)
-    mask &= (years >= ANALYSIS_YEAR_START) & (years <= ANALYSIS_YEAR_END)
+    available_years = defect_available_years(defect_df)
+    mask = years.notna() & years.isin(available_years)
     return int(mask.sum())
 
 
 def compute_M07(defect_df: pd.DataFrame, model_key: str) -> pd.DataFrame:
-    """M07: 접수연도별 신고 건수. 2023은 0건이 아니라 '데이터 미확보'로 표시해요."""
+    """M07: 접수연도별 신고 건수. 2023 원천 미확보 정책을 명시적으로 반영."""
     sub = model_defects(defect_df, model_key)
     counts = sub["report_date"].dt.year.value_counts()
+    available_years = defect_available_years(defect_df)
+
     rows = []
     for year in range(ANALYSIS_YEAR_START, ANALYSIS_YEAR_END + 1):
-        if year in DEFECT_MISSING_YEARS:
+        if year not in available_years:
             rows.append({"접수연도": year, "신고건수": None, "상태": "데이터 미확보"})
         else:
             rows.append({"접수연도": year, "신고건수": int(counts.get(year, 0)), "상태": "확보"})

@@ -6,10 +6,12 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import streamlit as st
+from lib.ui import apply_ui, navbar, page_intro, site_footer
 
 # FAQ 화면에서 사용하는 공통 데이터/검색/링크 함수입니다.
 from lib.common import (
     load_faq,
+    load_recall,
     search_faq,
     get_verified_models,
     link_or_gap,
@@ -22,29 +24,74 @@ from lib.common import (
 st.set_page_config(page_title="리콜 FAQ / 공식 안내", page_icon="💬", layout="wide")
 
 # Streamlit 기본 사이드바를 숨깁니다.
+apply_ui()
+navbar("FAQ")
+
 st.markdown(
     """
     <style>
     [data-testid="stSidebar"] { display: none; }
     [data-testid="stExpandSidebarButton"] { display: none; }
+    /* FAQ 검색 영역 전체를 아래로 이동 */
+    .st-key-faq_search_row {
+        margin-top: 12px !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* 검색창 높이 */
+    .st-key-faq_search_row [data-testid="stTextInput"] div[data-baseweb="input"] {
+        height: 48px !important;
+        min-height: 48px !important;
+        max-height: 48px !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-faq_search_row [data-testid="stTextInput"] input {
+        height: 100% !important;
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* 검색 버튼은 검색창보다 작게 */
+    .st-key-faq_search_row [data-testid="stButton"] button {
+        height: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
+        width: 100% !important;
+        padding: 0 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* FAQ 건수 문구 ↔ 첫 번째 카드 사이 여백 */
+    .st-key-faq_list {
+        margin-top: 16px !important;
+    }
+    /* FAQ 큰 박스끼리 간격
+       ui.py의 전역 [data-testid="stVerticalBlock"] { gap:0!important; }를
+       FAQ 목록 영역에서만 다시 덮어씁니다. */
+    .st-key-faq_list > div[data-testid="stVerticalBlock"],
+    .st-key-faq_list > div > div[data-testid="stVerticalBlock"],
+    .st-key-faq_list [data-testid="stVerticalBlock"]:first-child {
+        gap: 16px !important;
+        row-gap: 16px !important;
+    }
+
+    /* 각 FAQ 카드 wrapper 자체에도 하단 여백을 보조로 적용 */
+    .st-key-faq_list [data-testid="stVerticalBlockBorderWrapper"] {
+        margin-bottom: 16px !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # ------------------------------------------------------------
-# 상단 제목 / Home 버튼
+# 상단 제목
 # ------------------------------------------------------------
 
-header_cols = st.columns([5, 1])
 
-with header_cols[0]:
-    st.title("💬 리콜 FAQ / 공식 안내")
-
-with header_cols[1]:
-    st.write("")
-    if st.button("🏠 Home"):
-        st.switch_page("app.py")
+page_intro("리콜 FAQ / 공식 안내", "리콜·결함조사·보상 관련 자주 묻는 질문과 공식 확인 경로를 제공합니다.", "OFFICIAL GUIDE")
 
 # ------------------------------------------------------------
 # 이전 화면에서 선택한 모델 정보 확인
@@ -74,39 +121,75 @@ if selected_model_row is not None:
         f"제조사: {selected_model_row['manufacturer_std']}"
     )
 
-st.divider()
-
 # ------------------------------------------------------------
 # FAQ 데이터 로딩
 # ------------------------------------------------------------
 
-# 자동차리콜센터 FAQ 데이터를 불러옵니다.
+# 자동차리콜센터 FAQ / 공식 리콜 데이터를 불러옵니다.
 faq_df = load_faq()
+recall_df = load_recall()
+
+# D-REC official_check_url 중 현재 화면에서 사용할 공식 확인 URL을 선택합니다.
+# 모델 선택 상태가 있으면 해당 모델의 최신 리콜 캠페인 URL을 우선 사용하고,
+# 선택 모델이 없으면 전체 D-REC에서 최신 유효 URL을 사용합니다.
+official_recall_url = None
+
+if "official_check_url" in recall_df.columns:
+    recall_link_df = recall_df.copy()
+
+    if selected_model_key and "model_key" in recall_link_df.columns:
+        model_recall_df = recall_link_df[
+            recall_link_df["model_key"] == selected_model_key
+        ].copy()
+
+        if not model_recall_df.empty:
+            recall_link_df = model_recall_df
+
+    recall_link_df = recall_link_df[
+        recall_link_df["official_check_url"].notna()
+        & recall_link_df["official_check_url"].astype(str).str.strip().ne("")
+        & recall_link_df["official_check_url"].astype(str).str.lower().ne("nan")
+    ].copy()
+
+    if not recall_link_df.empty:
+        if "recall_start_date" in recall_link_df.columns:
+            recall_link_df = recall_link_df.sort_values(
+                "recall_start_date",
+                ascending=False,
+                na_position="last",
+            )
+
+        official_recall_url = str(
+            recall_link_df.iloc[0]["official_check_url"]
+        ).strip()
 
 # ------------------------------------------------------------
 # FAQ 검색
 # ------------------------------------------------------------
 
-search_cols = st.columns([5, 1])
-
-with search_cols[0]:
-    keyword = st.text_input(
-        "검색어",
-        placeholder="리콜 / 보상 / 결함조사 등",
-        label_visibility="collapsed",
+with st.container(key="faq_search_row"):
+    search_cols = st.columns(
+        [5.6, 1],
+        gap="small",
+        vertical_alignment="center",
     )
 
-with search_cols[1]:
-    st.button(
-        "검색",
-        use_container_width=True,
-    )
+    with search_cols[0]:
+        keyword = st.text_input(
+            "검색어",
+            placeholder="리콜 / 보상 / 결함조사 등",
+            label_visibility="collapsed",
+        )
+
+    with search_cols[1]:
+        st.button(
+            "검색",
+            use_container_width=True,
+        )
 
 # 검색어가 있으면 질문/답변 기준으로 검색하고,
 # 검색어가 없으면 전체 FAQ를 표시합니다.
 results = search_faq(faq_df, keyword) if keyword else faq_df.copy()
-
-st.divider()
 
 # ------------------------------------------------------------
 # FAQ 검색 결과
@@ -137,28 +220,31 @@ else:
             f"자동차리콜센터 공통 FAQ 전체 {len(results)}건"
         )
 
-    # FAQ 한 건씩 카드 형태로 표시합니다.
-    for _, row in results.iterrows():
-        with st.container(border=True):
-            st.markdown(
-                f"**Q. {row['question']}**"
-            )
+    # FAQ 전체 건수 문구와 첫 번째 카드 사이 여백은 faq_list의 margin으로 제어합니다.
 
-            st.caption(
-                f"제공기관 {row['provider']}"
-            )
+    with st.container(key="faq_list"):
 
-            st.write(
-                f"A. {row['answer']}"
-            )
+        for _, row in results.iterrows():
 
-            # 각 FAQ의 공식 원문 URL이 있으면 이동 버튼을 제공합니다.
-            link_or_gap(
-                row["source_url"],
-                "자동차리콜센터 FAQ 원문에서 확인",
-            )
+            with st.container(border=True):
+                st.markdown(
+                    f"**Q. {row['question']}**"
+                )
 
-    st.write("")
+                st.caption(
+                    f"제공기관 {row['provider']}"
+                )
+
+                st.write(
+                    f"A. {row['answer']}"
+                )
+
+                link_or_gap(
+                    row["source_url"],
+                    "자동차리콜센터 FAQ 원문에서 확인",
+                )
+    
+        st.write("")
 
     # 표시된 FAQ 중 가장 최근 수집시점을 확인합니다.
     latest_collected = (
@@ -183,12 +269,17 @@ st.divider()
 
 link_cols = st.columns(2)
 
-# 자동차리콜센터 공식 리콜 정보 페이지
+# D-REC official_check_url 기반 공식 리콜 정보 확인
 with link_cols[0]:
-    st.link_button(
-        "자동차리콜센터 공식 리콜 정보 확인",
-        "https://www.car.go.kr/home/main.do",
-    )
+    if official_recall_url:
+        st.link_button(
+            "자동차리콜센터 공식 리콜 정보 확인",
+            official_recall_url,
+        )
+    else:
+        st.caption(
+            "공식 리콜 확인 URL을 현재 D-REC에서 확인할 수 없습니다."
+        )
 
 # 선택된 모델이 있으면 해당 제조사의 공식 고객지원 페이지도 제공합니다.
 with link_cols[1]:
@@ -207,3 +298,4 @@ with link_cols[1]:
             st.caption(
                 "제조사 공식 고객지원 링크를 확인할 수 없습니다. (ST-10)"
             )
+site_footer()
