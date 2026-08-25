@@ -185,8 +185,8 @@ st.markdown(
     }
 
     .fuel-donut {
-        width:250px;
-        height:250px;
+        width:360px;
+        height:360px;
         border-radius:50%;
         position:relative;
         box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);
@@ -195,7 +195,7 @@ st.markdown(
     .fuel-donut::after {
         content:"";
         position:absolute;
-        inset:60px;
+        inset:86px;
         border-radius:50%;
         background:#fff;
         box-shadow:0 0 0 1px #edf0f3;

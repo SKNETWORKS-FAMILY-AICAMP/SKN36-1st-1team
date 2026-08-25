@@ -2,8 +2,7 @@
 import sys
 from pathlib import Path
 
-
-# app/pages에서 실행할 때 app/lib 모듈을 찾을 수 있도록 경로를 추가합니다.
+# app/pages에서 실행할 때 app/lib 및 프로젝트 루트의 src 모듈을 찾을 수 있도록 경로를 추가합니다.
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 APP_ROOT = Path(__file__).resolve().parents[1]
 
@@ -11,30 +10,27 @@ sys.path.append(str(PROJECT_ROOT))
 sys.path.append(str(APP_ROOT))
 
 import streamlit as st
-
 from lib.ui import apply_ui, navbar, page_intro, site_footer
 
+# 기존 (6) 파일의 리콜/링크 처리는 그대로 유지합니다.
 from lib.common import (
+    load_recall,
     link_or_gap,
 )
 
+# FAQ/모델 조회만 DB query_service를 사용합니다.
 from src.db.query_service import (
     get_faq,
     get_models,
 )
 
-
 # ------------------------------------------------------------
 # 페이지 기본 설정
 # ------------------------------------------------------------
 
+st.set_page_config(page_title="리콜 FAQ / 공식 안내", page_icon="💬", layout="wide")
 
-st.set_page_config(
-    page_title="리콜 FAQ / 공식 안내",
-    page_icon="💬",
-    layout="wide",
-)
-
+# Streamlit 기본 사이드바를 숨깁니다.
 apply_ui()
 navbar("FAQ")
 
@@ -43,12 +39,13 @@ st.markdown(
     <style>
     [data-testid="stSidebar"] { display: none; }
     [data-testid="stExpandSidebarButton"] { display: none; }
-
+    /* FAQ 검색 영역 전체를 아래로 이동 */
     .st-key-faq_search_row {
         margin-top: 12px !important;
         margin-bottom: 8px !important;
     }
 
+    /* 검색창 높이 */
     .st-key-faq_search_row [data-testid="stTextInput"] div[data-baseweb="input"] {
         height: 48px !important;
         min-height: 48px !important;
@@ -56,23 +53,62 @@ st.markdown(
         box-sizing: border-box !important;
     }
 
+    .st-key-faq_search_row [data-testid="stTextInput"] input {
+        height: 100% !important;
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* 검색 버튼은 검색창보다 작게 */
     .st-key-faq_search_row [data-testid="stButton"] button {
         height: 42px !important;
         min-height: 42px !important;
         max-height: 42px !important;
         width: 100% !important;
+        padding: 0 12px !important;
+        box-sizing: border-box !important;
+    }
+    /* FAQ 답변 글씨와 원문 확인 버튼 사이 여백 */
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] {
+        margin-top: 4px !important;
     }
 
+    /* FAQ 건수 문구 ↔ 첫 번째 카드 사이 여백 */
     .st-key-faq_list {
         margin-top: 16px !important;
     }
+    /* FAQ 큰 박스 내부 여백 */
+    [class*="st-key-faq_card_"] {
+        padding: 20px 28px !important;
+        margin-bottom: 16px !important;
+    }
+    /* FAQ 원문 버튼 왼쪽으로 이동 */
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] {
+        margin-left: -4px !important;
+    }
+    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] a {
+    min-width: 250px !important;
+    width: auto !important;
+    height: 48px !important;
 
+    padding: 0 18px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 16px !important;
+    white-space: nowrap !important;
+    }
+    /* FAQ 카드 기준점 */
     [class*="st-key-faq_card_"] {
         position: relative !important;
-        padding: 20px 24px !important;
+        padding: 20px 24px 20px 24px !important;
         margin-bottom: 16px !important;
     }
 
+    /* 제공기관 → 카드 오른쪽 하단 */
     [class*="st-key-faq_card_"] .faq-provider {
         position: absolute !important;
         right: 24px !important;
@@ -81,33 +117,21 @@ st.markdown(
         color: #8A9099 !important;
         white-space: nowrap !important;
     }
-
-    [class*="st-key-faq_card_"] [data-testid="stLinkButton"] a {
-        min-width: 250px !important;
-        width: auto !important;
-        height: 48px !important;
-        padding: 0 18px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 16px !important;
-        white-space: nowrap !important;
+    /* FAQ 질문(Q) 아래 여백 */
+    [class*="st-key-faq_card_"] [data-testid="stMarkdownContainer"]:first-child {
+        margin-bottom: 2px !important;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-
 # ------------------------------------------------------------
-# 상단 제목 / Home 버튼
+# 상단 제목
 # ------------------------------------------------------------
 
-page_intro(
-    "리콜 FAQ / 공식 안내",
-    "리콜·결함조사·보상 관련 자주 묻는 질문과 공식 확인 경로를 제공합니다.",
-    "OFFICIAL GUIDE",
-)
+
+page_intro("리콜 FAQ / 공식 안내", "리콜·결함조사·보상 관련 자주 묻는 질문과 공식 확인 경로를 제공합니다.", "OFFICIAL GUIDE")
 
 # ------------------------------------------------------------
 # 이전 화면에서 선택한 모델 정보 확인
@@ -137,12 +161,46 @@ if selected_model_row is not None:
         f"제조사: {selected_model_row['manufacturer_std']}"
     )
 
-st.divider()
-
 # ------------------------------------------------------------
 # FAQ 데이터 로딩
 # ------------------------------------------------------------
 
+# 공식 리콜 데이터는 기존 (6) 파일 방식 그대로 불러옵니다.
+recall_df = load_recall()
+
+# D-REC official_check_url 중 현재 화면에서 사용할 공식 확인 URL을 선택합니다.
+# 모델 선택 상태가 있으면 해당 모델의 최신 리콜 캠페인 URL을 우선 사용하고,
+# 선택 모델이 없으면 전체 D-REC에서 최신 유효 URL을 사용합니다.
+official_recall_url = None
+
+if "official_check_url" in recall_df.columns:
+    recall_link_df = recall_df.copy()
+
+    if selected_model_key and "model_key" in recall_link_df.columns:
+        model_recall_df = recall_link_df[
+            recall_link_df["model_key"] == selected_model_key
+        ].copy()
+
+        if not model_recall_df.empty:
+            recall_link_df = model_recall_df
+
+    recall_link_df = recall_link_df[
+        recall_link_df["official_check_url"].notna()
+        & recall_link_df["official_check_url"].astype(str).str.strip().ne("")
+        & recall_link_df["official_check_url"].astype(str).str.lower().ne("nan")
+    ].copy()
+
+    if not recall_link_df.empty:
+        if "recall_start_date" in recall_link_df.columns:
+            recall_link_df = recall_link_df.sort_values(
+                "recall_start_date",
+                ascending=False,
+                na_position="last",
+            )
+
+        official_recall_url = str(
+            recall_link_df.iloc[0]["official_check_url"]
+        ).strip()
 
 # ------------------------------------------------------------
 # FAQ 검색
@@ -171,8 +229,6 @@ with st.container(key="faq_search_row"):
 # 검색어가 있으면 질문/답변 기준으로 검색하고,
 # 검색어가 없으면 전체 FAQ를 표시합니다.
 results = get_faq(keyword)
-
-st.divider()
 
 # ------------------------------------------------------------
 # FAQ 검색 결과
@@ -203,15 +259,13 @@ else:
             f"자동차리콜센터 공통 FAQ 전체 {len(results)}건"
         )
 
-    # FAQ 한 건씩 카드 형태로 표시합니다.
+    # FAQ 전체 건수 문구와 첫 번째 카드 사이 여백은 faq_list의 margin으로 제어합니다.
+
     with st.container(key="faq_list"):
 
         for idx, (_, row) in enumerate(results.iterrows()):
 
-            with st.container(
-                key=f"faq_card_{idx}",
-                border=True,
-            ):
+            with st.container(key=f"faq_card_{idx}", border=True):
                 st.markdown(
                     f"**Q. {row['question']}**"
                 )
@@ -224,7 +278,6 @@ else:
                     row["source_url"],
                     "자동차리콜센터 FAQ 원문에서 확인",
                 )
-
                 st.markdown(
                     f"""
                     <div class="faq-provider">
@@ -233,8 +286,8 @@ else:
                     """,
                     unsafe_allow_html=True,
                 )
-
-    st.write("")
+    
+        st.write("")
 
     # 표시된 FAQ 중 가장 최근 수집시점을 확인합니다.
     latest_collected = (
@@ -259,12 +312,17 @@ st.divider()
 
 link_cols = st.columns(2)
 
-# 자동차리콜센터 공식 리콜 정보 페이지
+# D-REC official_check_url 기반 공식 리콜 정보 확인
 with link_cols[0]:
-    st.link_button(
-        "자동차리콜센터 공식 리콜 정보 확인",
-        "https://www.car.go.kr/home/main.do",
-    )
+    if official_recall_url:
+        st.link_button(
+            "자동차리콜센터 공식 리콜 정보 확인",
+            official_recall_url,
+        )
+    else:
+        st.caption(
+            "공식 리콜 확인 URL을 현재 D-REC에서 확인할 수 없습니다."
+        )
 
 # 선택된 모델이 있으면 해당 제조사의 공식 고객지원 페이지도 제공합니다.
 with link_cols[1]:
@@ -283,7 +341,7 @@ with link_cols[1]:
             st.caption(
                 "제조사 공식 고객지원 링크를 확인할 수 없습니다. (ST-10)"
             )
-
+# 버튼 영역과 푸터 사이 여백
 st.markdown(
     "<div style='height: 30px;'></div>",
     unsafe_allow_html=True,

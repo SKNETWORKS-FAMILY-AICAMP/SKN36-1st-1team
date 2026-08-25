@@ -13,6 +13,7 @@ sys.path.append(str(PROJECT_ROOT))
 sys.path.append(str(APP_ROOT))
 
 import pandas as pd
+import altair as alt
 import streamlit as st
 from lib.ui import apply_ui, navbar, page_intro, site_footer
 
@@ -834,6 +835,98 @@ st.markdown(
     .recall-detail-link:hover {
         text-decoration: underline !important;
     }
+
+    /* =========================================================
+        다른 모델과 비교 — Compare Dashboard
+       ========================================================= */
+    .compare-section-label {
+        margin-top: 32px;      /* 이전 차트 ↔ 제목 */
+        margin-bottom: 12px;   /* 제목 ↔ 설명 */
+        color: #252a31;
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+    }
+
+    .compare-section-note {
+        margin-top: 0px;
+        margin-bottom: 18px;   /* 설명 ↔ 차트 */
+        color: #8a93a0;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .compare-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 10px 0 20px;
+    }
+
+    .compare-kpi-card {
+        background: #ffffff;
+        border: 1px solid #e3e6ea;
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-sizing: border-box;
+        box-shadow: 0 5px 16px rgba(20,20,25,.035);
+    }
+
+    .compare-kpi-title {
+        color: #777f8b;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .compare-kpi-model {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: baseline;
+        padding: 7px 0;
+        border-top: 1px solid #f0f1f3;
+    }
+
+    .compare-kpi-model:first-of-type {
+        border-top: 0;
+    }
+
+    .compare-kpi-name {
+        color: #525a66;
+        font-size: 12px;
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .compare-kpi-value {
+        color: #252a31;
+        font-size: 15px;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+        .compare-kpi-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* 비교 차트: 시안과 동일한 흰색 카드 느낌 */
+    .st-key-compare_sales_chart,
+    .st-key-compare_defect_chart,
+    .st-key-compare_reason_chart {
+        background: #ffffff !important;
+        border: 1px solid #e7e9ed !important;
+        border-radius: 14px !important;
+        padding: 16px 18px 10px !important;
+        box-shadow: 0 6px 18px rgba(20, 20, 25, 0.045) !important;
+        box-sizing: border-box !important;
+        margin-bottom: 22px !important;
+    }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -1497,8 +1590,7 @@ with st.container(key="compare_title"):
 
 # 현재 보고 있는 모델은 비교 후보에서 제외
 other_models = verified_models[
-    verified_models["model_key"]
-    != selected_model_key
+    verified_models["model_key"] != selected_model_key
 ]
 
 compare_labels = {
@@ -1510,6 +1602,359 @@ compare_labels = {
     for _, row in other_models.iterrows()
 }
 
+
+def _compare_grouped_bar(df, x_col, value_cols, height=260):
+    """두 모델 값을 겹치지 않는 그룹형 막대로 비교합니다."""
+    chart_df = (
+        df.reset_index()
+        if df.index.name == x_col
+        else df.copy()
+    )
+
+    long_df = chart_df.melt(
+        id_vars=[x_col],
+        value_vars=value_cols,
+        var_name="모델",
+        value_name="값",
+    )
+
+    long_df[x_col] = long_df[x_col].astype(str)
+
+    chart = (
+        alt.Chart(long_df)
+        .mark_bar(
+            size=26,
+            cornerRadiusTopLeft=4,
+            cornerRadiusTopRight=4,
+        )
+        .encode(
+            x=alt.X(
+                f"{x_col}:N",
+                title=None,
+                axis=alt.Axis(
+                    labelAngle=0,
+                    labelColor="#737b88",
+                    labelFontSize=12,
+                    tickSize=0,
+                    domain=False,
+                ),
+            ),
+            xOffset=alt.XOffset("모델:N"),
+            y=alt.Y(
+                "값:Q",
+                title=None,
+                axis=alt.Axis(
+                    grid=True,
+                    gridColor="#eef0f3",
+                    gridOpacity=1,
+                    labelColor="#8a93a0",
+                    labelFontSize=11,
+                    tickSize=0,
+                    domain=False,
+                    format=",",
+                ),
+            ),
+            color=alt.Color(
+                "모델:N",
+                scale=alt.Scale(
+                    range=["#b52d35", "#607895"],
+                ),
+                legend=alt.Legend(
+                    title=None,
+                    orient="bottom",
+                    labelColor="#687180",
+                    labelFontSize=12,
+                    symbolType="circle",
+                ),
+            ),
+            tooltip=[
+                alt.Tooltip(f"{x_col}:N", title=x_col),
+                alt.Tooltip("모델:N", title="모델"),
+                alt.Tooltip("값:Q", title="값", format=","),
+            ],
+        )
+        .properties(
+            height=height,
+            padding={"left": 18, "right": 18, "top": 18, "bottom": 18},
+        )
+        .configure_view(strokeWidth=0)
+    )
+
+    st.altair_chart(chart, use_container_width=True)
+    st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
+
+
+def _compare_line_chart(df, x_col, value_cols, height=260):
+    """연도 흐름 비교는 선 + 포인트로 보여줍니다."""
+    chart_df = (
+        df.reset_index()
+        if df.index.name == x_col
+        else df.copy()
+    )
+
+    long_df = chart_df.melt(
+        id_vars=[x_col],
+        value_vars=value_cols,
+        var_name="모델",
+        value_name="값",
+    )
+
+    long_df[x_col] = long_df[x_col].astype(str)
+
+    base = alt.Chart(long_df).encode(
+        x=alt.X(
+            f"{x_col}:N",
+            title=None,
+            axis=alt.Axis(
+                labelAngle=0,
+                labelColor="#737b88",
+                labelFontSize=12,
+                tickSize=0,
+                domain=False,
+            ),
+        ),
+        y=alt.Y(
+            "값:Q",
+            title=None,
+            axis=alt.Axis(
+                grid=True,
+                gridColor="#eef0f3",
+                gridOpacity=1,
+                labelColor="#8a93a0",
+                labelFontSize=11,
+                tickSize=0,
+                domain=False,
+                format=",",
+            ),
+        ),
+        color=alt.Color(
+            "모델:N",
+            scale=alt.Scale(
+                range=["#b52d35", "#607895"],
+            ),
+            legend=alt.Legend(
+                title=None,
+                orient="bottom",
+                labelColor="#687180",
+                labelFontSize=12,
+                symbolType="circle",
+            ),
+        ),
+        tooltip=[
+            alt.Tooltip(f"{x_col}:N", title=x_col),
+            alt.Tooltip("모델:N", title="모델"),
+            alt.Tooltip("값:Q", title="신고건수", format=","),
+        ],
+    )
+
+    line = base.mark_line(strokeWidth=3)
+    points = base.mark_circle(size=85, stroke="white", strokeWidth=2)
+
+    st.altair_chart(
+        (line + points)
+        .properties(
+            height=height,
+            padding={"left": 18, "right": 18, "top": 18, "bottom": 18},
+        )
+        .configure_view(strokeWidth=0),
+        use_container_width=True,
+    )
+
+
+def _compare_reason_chart(a_reason, b_reason, a_label, b_label):
+    """리콜 사유별 캠페인 수를 한눈에 비교하는 컴팩트한 카드형 막대차트."""
+    rows = []
+
+    if not a_reason.empty:
+        for _, row in a_reason.iterrows():
+            rows.append(
+                {
+                    "리콜 사유": str(row["recall_category"]),
+                    "모델": a_label,
+                    "캠페인 수": int(row["campaign_count"]),
+                }
+            )
+
+    if not b_reason.empty:
+        for _, row in b_reason.iterrows():
+            rows.append(
+                {
+                    "리콜 사유": str(row["recall_category"]),
+                    "모델": b_label,
+                    "캠페인 수": int(row["campaign_count"]),
+                }
+            )
+
+    if not rows:
+        st.caption("두 모델 모두 확인된 리콜 캠페인이 없습니다.")
+        return
+
+    reason_df = pd.DataFrame(rows)
+
+    # 모든 사유 × 두 모델 조합을 만들어 0건도 명시적으로 보여줍니다.
+    categories = (
+        reason_df.groupby("리콜 사유")["캠페인 수"]
+        .sum()
+        .sort_values(ascending=False)
+        .index
+        .tolist()
+    )
+
+    model_order = [a_label, b_label]
+
+    full_index = pd.MultiIndex.from_product(
+        [categories, model_order],
+        names=["리콜 사유", "모델"],
+    )
+
+    reason_full = (
+        reason_df.set_index(["리콜 사유", "모델"])
+        .reindex(full_index, fill_value=0)
+        .reset_index()
+    )
+
+    max_count = max(int(reason_full["캠페인 수"].max()), 1)
+
+    # 배경 트랙
+    track = (
+        alt.Chart(reason_full)
+        .mark_bar(
+            size=14,
+            cornerRadius=7,
+            color="#f1f2f4",
+        )
+        .encode(
+            y=alt.Y(
+                "리콜 사유:N",
+                sort=categories,
+                title=None,
+                axis=alt.Axis(
+                    labelColor="#525a66",
+                    labelFontSize=12,
+                    labelLimit=180,
+                    tickSize=0,
+                    domain=False,
+                ),
+            ),
+            yOffset=alt.YOffset(
+                "모델:N",
+                sort=model_order,
+            ),
+            x=alt.X(
+                "max_count:Q",
+                title=None,
+                scale=alt.Scale(domain=[0, max_count]),
+                axis=None,
+            ),
+        )
+        .transform_calculate(
+            max_count=str(max_count)
+        )
+    )
+
+    # 실제 값 막대
+    bars = (
+        alt.Chart(reason_full)
+        .mark_bar(
+            size=14,
+            cornerRadius=7,
+        )
+        .encode(
+            y=alt.Y(
+                "리콜 사유:N",
+                sort=categories,
+                title=None,
+                axis=alt.Axis(
+                    labelColor="#525a66",
+                    labelFontSize=12,
+                    labelLimit=180,
+                    tickSize=0,
+                    domain=False,
+                ),
+            ),
+            yOffset=alt.YOffset(
+                "모델:N",
+                sort=model_order,
+            ),
+            x=alt.X(
+                "캠페인 수:Q",
+                title=None,
+                scale=alt.Scale(domain=[0, max_count]),
+                axis=None,
+            ),
+            color=alt.Color(
+                "모델:N",
+                scale=alt.Scale(
+                    domain=model_order,
+                    range=["#b52d35", "#607895"],
+                ),
+                legend=None,
+            ),
+            tooltip=[
+                alt.Tooltip("리콜 사유:N", title="리콜 사유"),
+                alt.Tooltip("모델:N", title="모델"),
+                alt.Tooltip("캠페인 수:Q", title="캠페인 수"),
+            ],
+        )
+    )
+
+    # 막대 끝 숫자
+    labels = (
+        alt.Chart(reason_full)
+        .mark_text(
+            align="left",
+            baseline="middle",
+            dx=8,
+            fontSize=11,
+            fontWeight=700,
+            color="#5f6672",
+        )
+        .encode(
+            y=alt.Y(
+                "리콜 사유:N",
+                sort=categories,
+            ),
+            yOffset=alt.YOffset(
+                "모델:N",
+                sort=model_order,
+            ),
+            x=alt.X(
+                "캠페인 수:Q",
+                scale=alt.Scale(domain=[0, max_count]),
+            ),
+            text=alt.Text(
+                "캠페인 수:Q",
+                format="d",
+            ),
+        )
+    )
+
+    chart = (
+        (track + bars + labels)
+        .properties(
+            height=max(170, len(categories) * 54),
+            padding={
+                "left": 18,
+                "right": 36,
+                "top": 26,
+                "bottom": 24,
+            },
+        )
+        .configure_view(strokeWidth=0)
+    )
+
+    legend_html = (
+        '<div style="display:flex; gap:18px; align-items:center; '
+        'margin:4px 0 22px 8px; color:#687180; font-size:12px;">'
+        f'<span><span style="display:inline-block;width:10px;height:10px;'
+        f'border-radius:50%;background:#b52d35;margin-right:6px;"></span>{html.escape(a_label)}</span>'
+        f'<span><span style="display:inline-block;width:10px;height:10px;'
+        f'border-radius:50%;background:#607895;margin-right:6px;"></span>{html.escape(b_label)}</span>'
+        '</div>'
+    )
+
+    st.markdown(legend_html, unsafe_allow_html=True)
+    st.altair_chart(chart, use_container_width=True)
 
 cmp_cols = st.columns(
     [8, 1],
@@ -1535,9 +1980,7 @@ if (
     compare_clicked
     and compare_label != "비교 모델 선택"
 ):
-    compare_key = compare_labels[
-        compare_label
-    ]
+    compare_key = compare_labels[compare_label]
 
     try:
         # DB에서 모델 비교에 필요한 데이터를 조회
@@ -1551,29 +1994,26 @@ if (
             model_row["model_std"],
             model_row["generation_name"],
         )
-
         b_label = compare_label
-
 
         # ----------------------------------------------------
         # 판매량 비교
         # ----------------------------------------------------
-
         st.markdown(
-            "**판매량 비교** "
-            "(두 모델 모두 검증된 동일 연도만)"
+            '<div class="compare-section-label">판매량 비교</div>'
+            '<div class="compare-section-note">'
+            '두 모델 모두 검증된 동일 연도만 비교합니다.'
+            '</div>',
+            unsafe_allow_html=True,
         )
 
-        sales_common = compare_result[
-            "sales_common"
-        ]
+        sales_common = compare_result["sales_common"]
 
         if sales_common.empty:
             st.caption(
                 "두 모델이 공통으로 검증된 연도가 없어 "
                 "판매량은 비교할 수 없습니다."
             )
-
         else:
             cmp_sales = sales_common.rename(
                 columns={
@@ -1583,32 +2023,28 @@ if (
                 }
             ).set_index("연도")
 
-            static_bar_chart(
-                cmp_sales,
-                height=260,
-                sort=False,
-                x_label_angle=0,
-            )
-
+            with st.container(key="compare_sales_chart"):
+                _compare_grouped_bar(
+                    cmp_sales,
+                    "연도",
+                    [a_label, b_label],
+                    height=250,
+                )
 
         # ----------------------------------------------------
         # 결함신고 비교
         # ----------------------------------------------------
-
         st.markdown(
-            "**결함신고 비교** "
-            "(공통 확보 접수연도, 2023 제외)"
+            '<div class="compare-section-label">결함신고 비교</div>'
+            '<div class="compare-section-note">'
+            '공통 확보 접수연도 기준이며 2023년은 제외합니다.'
+            '</div>',
+            unsafe_allow_html=True,
         )
 
-        defect_a = compare_result[
-            "defect_yearly_a"
-        ]
+        defect_a = compare_result["defect_yearly_a"]
+        defect_b = compare_result["defect_yearly_b"]
 
-        defect_b = compare_result[
-            "defect_yearly_b"
-        ]
-
-        # 결함신고 원천 확보 연도
         common_defect_years = [
             2020,
             2021,
@@ -1623,7 +2059,6 @@ if (
                 defect_a["defect_count"],
             )
         )
-
         b_counts = dict(
             zip(
                 defect_b["report_year"],
@@ -1635,151 +2070,92 @@ if (
             {
                 "연도": common_defect_years,
                 a_label: [
-                    int(
-                        a_counts.get(
-                            year,
-                            0,
-                        )
-                    )
-                    for year
-                    in common_defect_years
+                    int(a_counts.get(year, 0))
+                    for year in common_defect_years
                 ],
                 b_label: [
-                    int(
-                        b_counts.get(
-                            year,
-                            0,
-                        )
-                    )
-                    for year
-                    in common_defect_years
+                    int(b_counts.get(year, 0))
+                    for year in common_defect_years
                 ],
             }
         ).set_index("연도")
 
-        static_bar_chart(
-            cmp_defect,
-            height=260,
-            sort=False,
-            x_label_angle=0,
-        )
-
+        with st.container(key="compare_defect_chart"):
+            _compare_line_chart(
+                cmp_defect,
+                "연도",
+                [a_label, b_label],
+                height=250,
+            )
 
         # ----------------------------------------------------
         # 리콜 비교
         # ----------------------------------------------------
+        st.markdown(
+            '<div class="compare-section-label">리콜 비교</div>',
+            unsafe_allow_html=True,
+        )
+
+        recall_a = compare_result["recall_a"]
+        recall_b = compare_result["recall_b"]
+
+        # 표 대신 핵심 3개 지표를 카드형으로 비교
+        recall_compare_html = (
+            '<div class="compare-kpi-grid">'
+
+            '<div class="compare-kpi-card">'
+            '<div class="compare-kpi-title">리콜 캠페인 수</div>'
+            f'<div class="compare-kpi-model"><span class="compare-kpi-name">{html.escape(a_label)}</span>'
+            f'<span class="compare-kpi-value">{int(recall_a["campaign_count"]):,}건</span></div>'
+            f'<div class="compare-kpi-model"><span class="compare-kpi-name">{html.escape(b_label)}</span>'
+            f'<span class="compare-kpi-value">{int(recall_b["campaign_count"]):,}건</span></div>'
+            '</div>'
+
+            '<div class="compare-kpi-card">'
+            '<div class="compare-kpi-title">리콜 대상대수 합계</div>'
+            f'<div class="compare-kpi-model"><span class="compare-kpi-name">{html.escape(a_label)}</span>'
+            f'<span class="compare-kpi-value">{fmt_count(recall_a["recall_target_sum"])}</span></div>'
+            f'<div class="compare-kpi-model"><span class="compare-kpi-name">{html.escape(b_label)}</span>'
+            f'<span class="compare-kpi-value">{fmt_count(recall_b["recall_target_sum"])}</span></div>'
+            '</div>'
+
+            '<div class="compare-kpi-card">'
+            '<div class="compare-kpi-title">최근 리콜일</div>'
+            f'<div class="compare-kpi-model"><span class="compare-kpi-name">{html.escape(a_label)}</span>'
+            f'<span class="compare-kpi-value">{fmt_date(recall_a["latest_recall_date"])}</span></div>'
+            f'<div class="compare-kpi-model"><span class="compare-kpi-name">{html.escape(b_label)}</span>'
+            f'<span class="compare-kpi-value">{fmt_date(recall_b["latest_recall_date"])}</span></div>'
+            '</div>'
+
+            '</div>'
+        )
 
         st.markdown(
-            "**리콜 비교**"
+            recall_compare_html,
+            unsafe_allow_html=True,
         )
-
-        recall_a = compare_result[
-            "recall_a"
-        ]
-
-        recall_b = compare_result[
-            "recall_b"
-        ]
-
-        compare_table = pd.DataFrame(
-            {
-                "항목": [
-                    "리콜 캠페인 수",
-                    "리콜 대상대수 합계",
-                    "최근 리콜일",
-                ],
-                a_label: [
-                    f"{int(recall_a['campaign_count'])}건",
-                    fmt_count(
-                        recall_a[
-                            "recall_target_sum"
-                        ]
-                    ),
-                    fmt_date(
-                        recall_a[
-                            "latest_recall_date"
-                        ]
-                    ),
-                ],
-                b_label: [
-                    f"{int(recall_b['campaign_count'])}건",
-                    fmt_count(
-                        recall_b[
-                            "recall_target_sum"
-                        ]
-                    ),
-                    fmt_date(
-                        recall_b[
-                            "latest_recall_date"
-                        ]
-                    ),
-                ],
-            }
-        )
-
-        st.dataframe(
-            compare_table,
-            hide_index=True,
-            width="stretch",
-        )
-
 
         # ----------------------------------------------------
         # 리콜 사유 구성 비교
         # ----------------------------------------------------
+        st.markdown(
+            '<div class="compare-section-label">리콜 사유 구성</div>'
+            '<div class="compare-section-note">'
+            '두 모델의 캠페인 수를 동일한 축에서 비교합니다.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
-        reason_cols = st.columns(2)
+        a_reason = compare_result["recall_categories_a"]
+        b_reason = compare_result["recall_categories_b"]
 
-
-        with reason_cols[0]:
-            st.caption(
-                f"{a_label} 리콜 사유 구성"
+        with st.container(key="compare_reason_chart"):
+            _compare_reason_chart(
+                a_reason,
+                b_reason,
+                a_label,
+                b_label,
             )
-
-            a_reason = compare_result[
-                "recall_categories_a"
-            ]
-
-            if a_reason.empty:
-                st.caption(
-                    "리콜 캠페인 없음"
-                )
-
-            else:
-                static_bar_chart(
-                    a_reason.set_index(
-                        "recall_category"
-                    )["campaign_count"],
-                    height=200,
-                    horizontal=True,
-                    sort=False,
-                )
-
-
-        with reason_cols[1]:
-            st.caption(
-                f"{b_label} 리콜 사유 구성"
-            )
-
-            b_reason = compare_result[
-                "recall_categories_b"
-            ]
-
-            if b_reason.empty:
-                st.caption(
-                    "리콜 캠페인 없음"
-                )
-
-            else:
-                static_bar_chart(
-                    b_reason.set_index(
-                        "recall_category"
-                    )["campaign_count"],
-                    height=200,
-                    horizontal=True,
-                    sort=False,
-                )
-
 
         st.caption(
             "※ 최근 확인 판매량(M04) KPI는 모델마다 "
@@ -1787,15 +2163,12 @@ if (
             "비교는 안전성 우열·구매추천이 아니에요."
         )
 
-
     except Exception as e:
         st.error(
             f"모델 비교 데이터를 불러오지 못했습니다: {e}"
         )
 
-
 st.divider()
-
 
 # ============================================================
 # 6. FAQ / 출처 / 해석 안내
