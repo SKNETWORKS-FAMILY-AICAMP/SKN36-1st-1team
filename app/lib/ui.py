@@ -462,7 +462,7 @@ def navbar(active="", logo_uri=None):
     logo_html = f'<img src="{logo_uri}" alt="REDLINE">' if logo_uri else '<span style="font-weight:900;color:white;font-size:22px">REDLINE</span>'
     st.markdown(f'''
     <nav class="auto-nav" id="top">
-      <a class="auto-brand" href="/" target="_self" aria-label="AUTO INSIGHT 홈">{logo_html}</a>
+      <a class="auto-brand" href="/" target="_self" aria-label="REDLINE 홈">{logo_html}</a>
       <div class="auto-nav-links">
         <a href="/S01_model_search" target="_self">모델 검색</a>
         <a href="/S03_registration" target="_self">등록현황</a>
