@@ -1,0 +1,12 @@
+# 사용자 브라우저/OS가 다크모드여도 항상 밝은 테마로 고정해요.
+# (배경만 강제로 밝게 바꾸고 글자색은 그대로 두면, 다크테마의 밝은 글자색과
+#  겹쳐서 "하얀 바탕에 하얀 글씨"처럼 거의 안 보이는 문제가 생겨요 —
+#  그래서 페이지별 CSS로 배경만 땜질하지 않고, 테마 자체를 여기서 고정해요.)
+[theme]
+base = "light"
+primaryColor = "#C8102E"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F3F4F6"
+textColor = "#1F2937"
+chartCategoricalColors = ["#C8102E", "#A50E27", "#E2545F", "#EF9AA0", "#8B1220", "#F7B9BE", "#5C0B18", "#FBDADC"]
+chartSequentialColors = ["#FBDADC", "#EF9AA0", "#E2545F", "#C8102E", "#A50E27", "#8B1220", "#5C0B18", "#3B0710"]
