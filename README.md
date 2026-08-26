@@ -144,29 +144,36 @@
 ```text
 SKN36-1st-1team/
 ├─ app/
-│  ├─ app.py
+│  ├─ app.py                    # Streamlit 메인 페이지
+│  ├─ assets/                   # 로고 및 화면 이미지
 │  ├─ lib/
-│  │  └─ common.py
+│  │  ├─ common.py             # 공통 함수
+│  │  └─ ui.py                 # 공통 UI 구성
 │  └─ pages/
-│     ├─ S01_모델검색.py
-│     ├─ S02_모델통합상세.py
-│     ├─ S03_등록현황상세.py
-│     └─ S04_FAQ.py
+│     ├─ S01_model_search.py    # 모델 선택 및 시장 요약
+│     ├─ S02_model_detail.py    # 모델 통합 상세·비교
+│     ├─ S03_registration.py    # 전국 자동차 등록현황
+│     └─ S04_FAQ.py             # 리콜 FAQ·공식 안내
 ├─ data/
-│  ├─ raw/
-│  └─ processed/
+│  ├─ raw/                      # 원천 데이터
+│  └─ processed/                # 전처리 완료 데이터
 ├─ src/
+│  ├─ collection/               # FAQ 데이터 수집
+│  ├─ preprocessing/            # 데이터별 전처리·모델 매핑
+│  ├─ validation/               # 데이터 정합성 검증
 │  └─ db/
-│     └─ model_compare.py
+│     ├─ load_to_mysql.py       # MySQL 전체 적재
+│     ├─ model_compare.py       # 두 모델 비교 조회
+│     └─ query_service.py       # Streamlit DB 조회 서비스
 ├─ db/
-│  ├─ erd.sql
-│  ├─ queries.sql
-│  └─ schema.sql
+│  ├─ schema.sql                # MySQL 테이블 스키마
+│  ├─ erd.sql                   # ERD 정의
+│  └─ queries.sql               # 주요 조회 SQL
 ├─ .streamlit/
-│  └─ config.toml
-├─ docker-compose.yml
-├─ pyproject.toml
-├─ uv.lock
+│  └─ config.toml               # Streamlit 설정
+├─ docker-compose.yml           # MySQL 컨테이너 설정
+├─ pyproject.toml               # 프로젝트·의존성 설정
+├─ uv.lock                      # 의존성 버전 잠금
 └─ README.md
 ```
 
