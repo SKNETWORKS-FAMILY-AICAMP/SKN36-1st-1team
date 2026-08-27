@@ -1,0 +1,82 @@
+%% 전국 자동차 등록현황 및 주요 차종 판매·안전정보·공식 FAQ 통합 조회 시스템 · User Flow v2.6
+%% 스토리: 시장(전국 등록현황) → 모델(국내 판매량) → 신호(제작결함 신고) → 조치(공식 리콜) → 안내(공통 FAQ + 모델 선택 시 제조사 지원)
+
+flowchart TD
+    START([서비스 진입])
+
+    subgraph S01["S-01 홈 / 전국 등록현황 요약 + 모델 검색"]
+        A1["홈 진입<br/>시장 전체 + 관심 모델 탐색"]
+        A2["전국 등록현황 요약<br/>총 등록대수 · 지역 · 차종 · 연료<br/>D-REG = 시장 전체 Stock"]
+        A3["지원 모델 선택<br/>검증완료 27개 모델 드롭다운<br/>D-MAP"]
+        A4{"모델 선택?"}
+        A5["모델 선택<br/>model_key 저장"]
+        A6["모델 미선택<br/>지원 차종 선택 안내"]
+    end
+
+    subgraph S02["S-02 모델 통합 상세"]
+        B0["(manufacturer_std) (model_std)<br/>모델 통합 상세"]
+        B1["① 판매량 · Flow<br/>최근 확인 연도 판매량<br/>2020~2025 추이 · 검증상태 · D-SALES"]
+        B2["② 결함신고 · Signal<br/>신고 건수 · 접수연도 추이 · 모델년도 분포<br/>※ 신고 사유/내용 원천 미제공 · D-DEF"]
+        B3["③ 리콜 · Action<br/>캠페인 수 · 대상대수 · 사유 구성<br/>생산기간 · 개시일 · 공식 사유 · D-REC"]
+        B4["선택: 두 모델 비교<br/>판매=동일 연도 · 신고=동일 접수기간<br/>리콜=동일 지표"]
+        B5["해석 안내<br/>결함률·리콜률·안전점수 금지 / 서로 다른 모집단"]
+    end
+
+    subgraph S04["S-04 리콜 FAQ / 공식 안내"]
+        D1["자동차리콜센터 FAQ 검색<br/>질문·답변 검색<br/>메뉴 직접 진입 가능"]
+        D2["질문 / 답변<br/>공식 원문 URL"]
+        D3["공식 확인<br/>제조사 고객지원*<br/>자동차리콜센터"]
+    end
+
+    subgraph S03["S-03 전국 자동차 등록현황 상세"]
+        C1["전국 등록현황 상세<br/>기준시점 선택(가능 시)"]
+        C2["지역별 / 차종별 / 연료별<br/>표 · 차트 확인"]
+        C3["시장 전체 통계<br/>개별 모델 등록대수 아님<br/>안전 지표가 아님"]
+    end
+
+    END([조회 완료])
+
+    START --> A1 --> A2 --> A3 --> A4
+    A4 -->|예| A5
+    A4 -->|아니오| A6
+    A6 -.다시 선택.-> A3
+    A5 --> B0
+    B0 --> B1 --> B2 --> B3
+    B3 -->|"비교(선택)"| B4
+    B4 --> B5
+    A2 -->|등록현황 상세| C1
+    C1 --> C2 --> C3
+    C3 -.홈.-> A1
+    B5 -.FAQ 확인.-> D1
+    D1 --> D2 --> D3
+    B5 -->|종료| END
+    D3 --> END
+    C3 --> END
+
+    classDef start fill:#17365d,color:#fff,stroke:#17365d
+    classDef done fill:#548235,color:#fff,stroke:#385723
+    classDef decision fill:#FFF2CC,stroke:#C99A00
+    classDef ok fill:#E2F0D9,stroke:#70AD47
+    classDef warn fill:#FCE4D6,stroke:#ED7D31
+    classDef flow fill:#DCEBF7,stroke:#2F5597
+    classDef signal fill:#FFF2CC,stroke:#D6A300
+    classDef action fill:#FCE4D6,stroke:#ED7D31
+    classDef faq fill:#FFF2CC,stroke:#D6A300
+    classDef info fill:#EAF2F8,stroke:#5B9BD5
+
+    class START start
+    class END done
+    class A4 decision
+    class A5,C1,C2 ok
+    class C3 warn
+    class A6 warn
+    class B1 flow
+    class B2 signal
+    class B3 action
+    class B4 ok
+    class B5 signal
+    class D1,D3 faq
+    class D2 info
+    class A1,A2,A3 info
+
+    %% 각주: 제조사 고객지원 링크는 선택 모델이 있는 경우에만 표시
